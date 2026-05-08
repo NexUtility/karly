@@ -118,13 +118,16 @@ because they are the primary acquisition driver from research:
 2. **KDV-correct mode** — accurate Trendyol "Platform Hizmet Bedeli" handling and
    per-category Turkish VAT rules
 3. **Multi-currency with live FX** — the Turkish seller running Etsy in USD
-4. **CSV / PDF export** — to forward to muhasebeci (accountant)
+4. **CSV / PDF export** — to forward to muhasebeci (accountant). PDF share
+   currently ships unrestricted in v0.1 to maximise word-of-mouth (each
+   shared report is a brand impression on WhatsApp / email); the gate
+   activates when the paywall lands in v0.2.
 
 ## Roadmap
 
 | Version | Scope                                                                                                                               | Target            |
 | ------- | ----------------------------------------------------------------------------------------------------------------------------------- | ----------------- |
-| 0.1     | Calculator MVP, marketplaces preset list, Material 3 dark theme, EN + TR i18n, history + settings stubs                             | ✅ this commit    |
+| 0.1     | Calculator MVP, marketplaces preset list, Material 3 dark theme, EN + TR i18n, history + settings stubs, **PDF report + system share** (free; will be gated to Pro when paywall lands) | ✅ this commit    |
 | 0.2     | Save calculations to local storage (SharedPreferences → drift if growth), History list, RevenueCat paywall, AdMob banner on free    | next 2 weeks      |
 | 0.3     | Cross-marketplace SKU compare screen, multi-currency w/ FX rates, CSV export                                                        | +2 weeks          |
 | 0.4     | Per-category commission tables for TR marketplaces, KDV mode, PDF export                                                            | +3 weeks          |

@@ -33,6 +33,15 @@
   "actionCalculate": "Hesapla",
   "actionReset": "Sıfırla",
   "actionSave": "Kaydet",
+  "actionSharePdf": "PDF Paylaş",
+
+  "pdfTitle": "Kâr Raporu",
+  "pdfGeneratedOn": "Oluşturulma: {date}",
+  "pdfSectionInputs": "Girdiler",
+  "pdfSectionResults": "Detay",
+  "pdfTotalCosts": "Toplam maliyet",
+  "pdfFooter": "Kârly tarafından oluşturuldu · nexutility.com/apps/karly",
+  "pdfShareSubject": "Kârly kâr raporu",
 
   "historyEmptyTitle": "Kayıtlı hesaplama yok",
   "historyEmptyBody": "Hesaplayıcıdan bir hesaplamayı kaydet, burada görünsün.",

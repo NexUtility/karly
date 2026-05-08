@@ -19,6 +19,10 @@ dependencies:
   shared_preferences: ^2.3.4
   decimal: ^3.0.2
 
+  # PDF report + system share
+  pdf: ^3.11.2
+  printing: ^5.13.4
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
