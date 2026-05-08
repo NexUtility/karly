@@ -1,0 +1,53 @@
+{
+  "@@locale": "tr",
+  "appName": "Kârly",
+  "appTagline": "Pazaryeri kâr hesaplayıcı",
+
+  "navCalculator": "Hesaplayıcı",
+  "navHistory": "Geçmiş",
+  "navSettings": "Ayarlar",
+
+  "calculatorTitle": "Kâr Hesaplayıcı",
+  "marketplaceLabel": "Pazaryeri",
+  "marketplacePickHint": "Pazaryeri seç",
+  "categoryLabel": "Kategori",
+  "currencyLabel": "Para birimi",
+
+  "inputCost": "Ürün maliyeti",
+  "inputCostHint": "Ürün için ödediğin tutar",
+  "inputSellPrice": "Satış fiyatı",
+  "inputSellPriceHint": "Pazaryerindeki liste fiyatı",
+  "inputCommissionRate": "Komisyon %",
+  "inputShipping": "Kargo bedeli",
+  "inputAdSpend": "Reklam harcaması",
+  "inputVatRate": "KDV %",
+
+  "resultNetProfit": "Net kâr",
+  "resultMargin": "Marj",
+  "resultBreakeven": "Başabaş fiyat",
+  "resultCommission": "Komisyon",
+  "resultVat": "KDV",
+  "resultROI": "ROI",
+  "resultLossWarning": "Bu satış zarar ediyor.",
+
+  "actionCalculate": "Hesapla",
+  "actionReset": "Sıfırla",
+  "actionSave": "Kaydet",
+
+  "historyEmptyTitle": "Kayıtlı hesaplama yok",
+  "historyEmptyBody": "Hesaplayıcıdan bir hesaplamayı kaydet, burada görünsün.",
+
+  "settingsLanguage": "Dil",
+  "settingsLanguageSystem": "Sistem varsayılanı",
+  "settingsLanguageEnglish": "English",
+  "settingsLanguageTurkish": "Türkçe",
+  "settingsTheme": "Tema",
+  "settingsThemeSystem": "Sistem",
+  "settingsThemeLight": "Açık",
+  "settingsThemeDark": "Koyu",
+  "settingsAbout": "Hakkında",
+  "settingsPrivacy": "Gizlilik Politikası",
+  "settingsTerms": "Kullanım Şartları",
+  "settingsSupport": "Destek",
+  "settingsVersion": "Sürüm {version}"
+}

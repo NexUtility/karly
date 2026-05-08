@@ -1,0 +1,56 @@
+{
+  "@@locale": "en",
+  "appName": "Kârly",
+  "appTagline": "Marketplace profit calculator",
+
+  "navCalculator": "Calculator",
+  "navHistory": "History",
+  "navSettings": "Settings",
+
+  "calculatorTitle": "Profit Calculator",
+  "marketplaceLabel": "Marketplace",
+  "marketplacePickHint": "Pick a marketplace",
+  "categoryLabel": "Category",
+  "currencyLabel": "Currency",
+
+  "inputCost": "Item cost",
+  "inputCostHint": "What you pay for the item",
+  "inputSellPrice": "Sell price",
+  "inputSellPriceHint": "Listing price on the marketplace",
+  "inputCommissionRate": "Commission %",
+  "inputShipping": "Shipping cost",
+  "inputAdSpend": "Ad spend",
+  "inputVatRate": "VAT / KDV %",
+
+  "resultNetProfit": "Net profit",
+  "resultMargin": "Margin",
+  "resultBreakeven": "Breakeven price",
+  "resultCommission": "Commission",
+  "resultVat": "VAT",
+  "resultROI": "ROI",
+  "resultLossWarning": "This sale loses money.",
+
+  "actionCalculate": "Calculate",
+  "actionReset": "Reset",
+  "actionSave": "Save",
+
+  "historyEmptyTitle": "No saved calculations yet",
+  "historyEmptyBody": "Save a calculation from the calculator to see it here.",
+
+  "settingsLanguage": "Language",
+  "settingsLanguageSystem": "System default",
+  "settingsLanguageEnglish": "English",
+  "settingsLanguageTurkish": "Türkçe",
+  "settingsTheme": "Theme",
+  "settingsThemeSystem": "System",
+  "settingsThemeLight": "Light",
+  "settingsThemeDark": "Dark",
+  "settingsAbout": "About",
+  "settingsPrivacy": "Privacy Policy",
+  "settingsTerms": "Terms of Service",
+  "settingsSupport": "Support",
+  "settingsVersion": "Version {version}",
+  "@settingsVersion": {
+    "placeholders": {"version": {"type": "String"}}
+  }
+}
