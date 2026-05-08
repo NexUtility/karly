@@ -7,12 +7,16 @@
   "navHistory": "History",
   "navSettings": "Settings",
 
-  "calculatorTitle": "Profit Calculator",
+  "calculatorBrandSubtitle": "Profit calculator",
   "marketplaceLabel": "Marketplace",
   "marketplacePickHint": "Pick a marketplace",
+  "regionTurkey": "Türkiye",
+  "regionGlobal": "Global",
   "categoryLabel": "Category",
   "currencyLabel": "Currency",
 
+  "inputItemName": "Item name",
+  "inputItemNameHint": "What are you selling? (optional)",
   "inputCost": "Item cost",
   "inputCostHint": "What you pay for the item",
   "inputSellPrice": "Sell price",
@@ -20,7 +24,7 @@
   "inputCommissionRate": "Commission %",
   "inputShipping": "Shipping cost",
   "inputAdSpend": "Ad spend",
-  "inputVatRate": "VAT / KDV %",
+  "inputVatRate": "VAT %",
 
   "resultNetProfit": "Net profit",
   "resultMargin": "Margin",
@@ -64,5 +68,31 @@
   "settingsVersion": "Version {version}",
   "@settingsVersion": {
     "placeholders": {"version": {"type": "String"}}
-  }
+  },
+  "settingsSubscription": "Subscription",
+  "settingsSubscriptionFree": "Free plan",
+  "settingsSubscriptionPro": "Kârly Pro",
+  "settingsSubscriptionUpgrade": "Upgrade to Pro",
+
+  "paywallTitle": "Kârly Pro",
+  "paywallSubtitle": "Unlock the full toolkit.",
+  "paywallFeatureHistory": "Unlimited saved calculations + 12-month history",
+  "paywallFeatureCompare": "Cross-marketplace SKU comparison",
+  "paywallFeatureCurrency": "Multi-currency with live FX",
+  "paywallFeatureExport": "Unlimited CSV / PDF export",
+  "paywallFeatureAds": "No ads, ever",
+  "paywallAnnualTitle": "Annual",
+  "paywallAnnualPrice": "$19.99 / yr",
+  "paywallAnnualPerMonth": "$1.66 / mo · save 44%",
+  "paywallAnnualBadge": "Best value",
+  "paywallMonthlyTitle": "Monthly",
+  "paywallMonthlyPrice": "$2.99 / mo",
+  "paywallContinue": "Continue",
+  "paywallRestore": "Restore purchases",
+  "paywallDisclaimer": "Subscriptions auto-renew until cancelled. Manage anytime from your Play Store account.",
+  "paywallStubMessage": "Subscriptions go live in v0.2. The buttons are wired up; billing isn't connected yet.",
+  "paywallTermsAndPrivacy": "By continuing you agree to our Terms and Privacy Policy.",
+
+  "historyProGateTitle": "Save your work with Kârly Pro",
+  "historyProGateBody": "History keeps every calculation you've run. Subscribe to unlock saved entries, comparisons, exports, and an ad-free experience."
 }

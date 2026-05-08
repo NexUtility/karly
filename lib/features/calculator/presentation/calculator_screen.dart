@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:printing/printing.dart';
 
 import '../../../l10n/generated/app_localizations.dart';
+import '../../../theme/colors.dart';
 import '../data/marketplace.dart';
 import '../data/marketplaces.dart';
 import '../domain/calculate.dart';
@@ -21,32 +22,36 @@ class CalculatorScreen extends ConsumerStatefulWidget {
 }
 
 class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
-  static const _initialMarketplaceId = 'trendyol';
-
-  late Marketplace _marketplace;
+  Marketplace? _marketplace;
+  final _itemNameCtrl = TextEditingController();
   final _costCtrl = TextEditingController();
   final _sellCtrl = TextEditingController();
   final _commissionCtrl = TextEditingController();
   final _shippingCtrl = TextEditingController();
   final _adSpendCtrl = TextEditingController();
-  final _vatCtrl = TextEditingController(text: '20');
+  final _vatCtrl = TextEditingController();
 
   CalcResult? _result;
   CalcInputs? _lastInputs;
   bool _sharing = false;
 
   @override
-  void initState() {
-    super.initState();
-    _marketplace = defaultMarketplaces.firstWhere(
-      (m) => m.id == _initialMarketplaceId,
-    );
-    _commissionCtrl.text = (_marketplace.defaultCommissionRate * 100)
-        .toStringAsFixed(1);
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (_marketplace == null) {
+      // First build — pick a marketplace based on the active locale
+      // (Trendyol for Turkish users, Amazon US for everyone else).
+      final lang = Localizations.localeOf(context).languageCode;
+      final defaultId = defaultMarketplaceIdFor(lang);
+      _applyMarketplace(
+        defaultMarketplaces.firstWhere((m) => m.id == defaultId),
+      );
+    }
   }
 
   @override
   void dispose() {
+    _itemNameCtrl.dispose();
     _costCtrl.dispose();
     _sellCtrl.dispose();
     _commissionCtrl.dispose();
@@ -56,23 +61,35 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
     super.dispose();
   }
 
+  /// Pre-fills commission and VAT based on the marketplace defaults,
+  /// without overwriting user-entered values they've already typed.
+  void _applyMarketplace(Marketplace m) {
+    _marketplace = m;
+    _commissionCtrl.text = (m.defaultCommissionRate * 100).toStringAsFixed(1);
+    _vatCtrl.text = m.defaultVatRate == 0
+        ? ''
+        : (m.defaultVatRate * 100).toStringAsFixed(0);
+  }
+
   void _onMarketplaceChanged(Marketplace m) {
-    setState(() {
-      _marketplace = m;
-      _commissionCtrl.text = (m.defaultCommissionRate * 100).toStringAsFixed(1);
-    });
+    setState(() => _applyMarketplace(m));
   }
 
   void _onCalculate() {
+    final m = _marketplace;
+    if (m == null) return;
     final inputs = CalcInputs(
+      itemName: _itemNameCtrl.text.trim().isEmpty
+          ? null
+          : _itemNameCtrl.text.trim(),
       itemCost: _parse(_costCtrl.text),
       sellPrice: _parse(_sellCtrl.text),
       commissionRate: _parse(_commissionCtrl.text) / 100,
       shippingCost: _parse(_shippingCtrl.text),
       adSpend: _parse(_adSpendCtrl.text),
-      fixedListingFee: _marketplace.fixedListingFee,
+      fixedListingFee: m.fixedListingFee,
       vatRate: _parse(_vatCtrl.text) / 100,
-      currency: _marketplace.defaultCurrency,
+      currency: m.defaultCurrency,
     );
     setState(() {
       _result = calculateProfit(inputs);
@@ -81,14 +98,14 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
   }
 
   void _onReset() {
+    final m = _marketplace;
     setState(() {
+      _itemNameCtrl.clear();
       _costCtrl.clear();
       _sellCtrl.clear();
       _shippingCtrl.clear();
       _adSpendCtrl.clear();
-      _commissionCtrl.text = (_marketplace.defaultCommissionRate * 100)
-          .toStringAsFixed(1);
-      _vatCtrl.text = '20';
+      if (m != null) _applyMarketplace(m);
       _result = null;
       _lastInputs = null;
     });
@@ -97,15 +114,16 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
   Future<void> _onSharePdf() async {
     final result = _result;
     final inputs = _lastInputs;
-    if (result == null || inputs == null || _sharing) return;
+    final m = _marketplace;
+    if (result == null || inputs == null || m == null || _sharing) return;
 
     setState(() => _sharing = true);
     try {
       final l10n = AppLocalizations.of(context);
       final locale = Localizations.localeOf(context);
-      final dateStr = DateFormat.yMMMMd(locale.toString()).add_Hm().format(
-        DateTime.now(),
-      );
+      final dateStr = DateFormat.yMMMMd(
+        locale.toString(),
+      ).add_Hm().format(DateTime.now());
 
       final labels = ReportLabels(
         title: l10n.pdfTitle,
@@ -125,11 +143,13 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
         vat: l10n.resultVat,
         totalCosts: l10n.pdfTotalCosts,
         breakeven: l10n.resultBreakeven,
+        regionTurkey: l10n.regionTurkey,
+        regionGlobal: l10n.regionGlobal,
         footer: l10n.pdfFooter,
       );
 
       final bytes = await buildReportPdf(
-        marketplace: _marketplace,
+        marketplace: m,
         inputs: inputs,
         result: result,
         labels: labels,
@@ -140,7 +160,7 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
           .replaceAll(':', '-')
           .split('.')
           .first;
-      final filename = 'karly-${_marketplace.id}-$ts.pdf';
+      final filename = 'karly-${m.id}-$ts.pdf';
 
       await Printing.sharePdf(
         bytes: bytes,
@@ -169,112 +189,138 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final theme = Theme.of(context);
+    final marketplace = _marketplace;
 
     return Scaffold(
-      appBar: AppBar(title: Text(l10n.calculatorTitle)),
-      body: ListView(
-        padding: const EdgeInsets.fromLTRB(16, 8, 16, 28),
-        children: [
-          MarketplacePicker(
-            selectedId: _marketplace.id,
-            onChanged: _onMarketplaceChanged,
-          ),
-          if (_marketplace.notes != null) ...[
-            const SizedBox(height: 6),
-            Text(_marketplace.notes!, style: theme.textTheme.bodySmall),
-          ],
-          const SizedBox(height: 18),
-          _amountField(
-            controller: _costCtrl,
-            label: l10n.inputCost,
-            hint: l10n.inputCostHint,
-            currency: _marketplace.defaultCurrency,
-          ),
-          const SizedBox(height: 12),
-          _amountField(
-            controller: _sellCtrl,
-            label: l10n.inputSellPrice,
-            hint: l10n.inputSellPriceHint,
-            currency: _marketplace.defaultCurrency,
-          ),
-          const SizedBox(height: 12),
-          Row(
-            children: [
-              Expanded(
-                child: _percentField(
-                  controller: _commissionCtrl,
-                  label: l10n.inputCommissionRate,
-                ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: _percentField(
-                  controller: _vatCtrl,
-                  label: l10n.inputVatRate,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 12),
-          Row(
-            children: [
-              Expanded(
-                child: _amountField(
-                  controller: _shippingCtrl,
-                  label: l10n.inputShipping,
-                  currency: _marketplace.defaultCurrency,
-                ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: _amountField(
-                  controller: _adSpendCtrl,
-                  label: l10n.inputAdSpend,
-                  currency: _marketplace.defaultCurrency,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 22),
-          Row(
-            children: [
-              Expanded(
-                child: FilledButton(
-                  onPressed: _onCalculate,
-                  child: Text(l10n.actionCalculate),
-                ),
-              ),
-              const SizedBox(width: 10),
-              OutlinedButton(
-                onPressed: _onReset,
-                child: Text(l10n.actionReset),
-              ),
-            ],
-          ),
-          if (_result != null) ...[
-            const SizedBox(height: 22),
-            ResultCard(result: _result!, currency: _marketplace.defaultCurrency),
-            const SizedBox(height: 14),
-            SizedBox(
-              width: double.infinity,
-              child: OutlinedButton.icon(
-                onPressed: _sharing ? null : _onSharePdf,
-                icon: _sharing
-                    ? SizedBox(
-                        width: 16,
-                        height: 16,
-                        child: CircularProgressIndicator(
-                          strokeWidth: 2,
-                          color: theme.colorScheme.onSurface,
-                        ),
-                      )
-                    : const Icon(Icons.ios_share_rounded, size: 18),
-                label: Text(l10n.actionSharePdf),
-              ),
-            ),
-          ],
-        ],
+      appBar: AppBar(
+        title: const _BrandTitle(),
+        toolbarHeight: 64,
       ),
+      body: marketplace == null
+          ? const Center(child: CircularProgressIndicator())
+          : ListView(
+              padding: const EdgeInsets.fromLTRB(16, 4, 16, 28),
+              children: [
+                Text(
+                  l10n.calculatorBrandSubtitle,
+                  style: theme.textTheme.labelMedium?.copyWith(
+                    letterSpacing: 1.2,
+                  ),
+                ),
+                const SizedBox(height: 14),
+                MarketplacePicker(
+                  selectedId: marketplace.id,
+                  onChanged: _onMarketplaceChanged,
+                ),
+                if (marketplace.notes != null) ...[
+                  const SizedBox(height: 6),
+                  Text(marketplace.notes!, style: theme.textTheme.bodySmall),
+                ],
+                const SizedBox(height: 18),
+                TextField(
+                  controller: _itemNameCtrl,
+                  textInputAction: TextInputAction.next,
+                  textCapitalization: TextCapitalization.sentences,
+                  decoration: InputDecoration(
+                    labelText: l10n.inputItemName,
+                    hintText: l10n.inputItemNameHint,
+                  ),
+                ),
+                const SizedBox(height: 12),
+                _amountField(
+                  controller: _costCtrl,
+                  label: l10n.inputCost,
+                  hint: l10n.inputCostHint,
+                  currency: marketplace.defaultCurrency,
+                ),
+                const SizedBox(height: 12),
+                _amountField(
+                  controller: _sellCtrl,
+                  label: l10n.inputSellPrice,
+                  hint: l10n.inputSellPriceHint,
+                  currency: marketplace.defaultCurrency,
+                ),
+                const SizedBox(height: 12),
+                Row(
+                  children: [
+                    Expanded(
+                      child: _percentField(
+                        controller: _commissionCtrl,
+                        label: l10n.inputCommissionRate,
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: _percentField(
+                        controller: _vatCtrl,
+                        label: l10n.inputVatRate,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                Row(
+                  children: [
+                    Expanded(
+                      child: _amountField(
+                        controller: _shippingCtrl,
+                        label: l10n.inputShipping,
+                        currency: marketplace.defaultCurrency,
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: _amountField(
+                        controller: _adSpendCtrl,
+                        label: l10n.inputAdSpend,
+                        currency: marketplace.defaultCurrency,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 22),
+                Row(
+                  children: [
+                    Expanded(
+                      child: FilledButton(
+                        onPressed: _onCalculate,
+                        child: Text(l10n.actionCalculate),
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    OutlinedButton(
+                      onPressed: _onReset,
+                      child: Text(l10n.actionReset),
+                    ),
+                  ],
+                ),
+                if (_result != null) ...[
+                  const SizedBox(height: 22),
+                  ResultCard(
+                    result: _result!,
+                    currency: marketplace.defaultCurrency,
+                  ),
+                  const SizedBox(height: 14),
+                  SizedBox(
+                    width: double.infinity,
+                    child: OutlinedButton.icon(
+                      onPressed: _sharing ? null : _onSharePdf,
+                      icon: _sharing
+                          ? SizedBox(
+                              width: 16,
+                              height: 16,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                color: theme.colorScheme.onSurface,
+                              ),
+                            )
+                          : const Icon(Icons.ios_share_rounded, size: 18),
+                      label: Text(l10n.actionSharePdf),
+                    ),
+                  ),
+                ],
+              ],
+            ),
     );
   }
 
@@ -328,5 +374,46 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
       default:
         return '';
     }
+  }
+}
+
+class _BrandTitle extends StatelessWidget {
+  const _BrandTitle();
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Container(
+          width: 28,
+          height: 28,
+          decoration: BoxDecoration(
+            color: BrandColors.accent,
+            borderRadius: BorderRadius.circular(7),
+          ),
+          alignment: Alignment.center,
+          child: const Text(
+            'K',
+            style: TextStyle(
+              color: BrandColors.accentForeground,
+              fontWeight: FontWeight.w800,
+              fontSize: 16,
+              height: 1,
+              letterSpacing: -0.4,
+            ),
+          ),
+        ),
+        const SizedBox(width: 10),
+        Text(
+          'Kârly',
+          style: theme.textTheme.titleLarge?.copyWith(
+            fontWeight: FontWeight.w700,
+            letterSpacing: -0.3,
+          ),
+        ),
+      ],
+    );
   }
 }

@@ -10,12 +10,17 @@ class CalcInputs {
     required this.itemCost,
     required this.sellPrice,
     required this.commissionRate,
+    this.itemName,
     this.shippingCost = 0,
     this.adSpend = 0,
     this.fixedListingFee = 0,
     this.vatRate = 0,
     this.currency = 'USD',
   });
+
+  /// Optional human-readable name of the item being sold (e.g. "Black hoodie XL").
+  /// Shown in the PDF report header and the future History list.
+  final String? itemName;
 
   final double itemCost;
   final double sellPrice;
@@ -34,6 +39,7 @@ class CalcInputs {
   final String currency;
 
   CalcInputs copyWith({
+    String? itemName,
     double? itemCost,
     double? sellPrice,
     double? commissionRate,
@@ -44,6 +50,7 @@ class CalcInputs {
     String? currency,
   }) {
     return CalcInputs(
+      itemName: itemName ?? this.itemName,
       itemCost: itemCost ?? this.itemCost,
       sellPrice: sellPrice ?? this.sellPrice,
       commissionRate: commissionRate ?? this.commissionRate,

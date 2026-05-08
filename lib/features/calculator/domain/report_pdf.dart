@@ -30,6 +30,8 @@ class ReportLabels {
     required this.vat,
     required this.totalCosts,
     required this.breakeven,
+    required this.regionTurkey,
+    required this.regionGlobal,
     required this.footer,
   });
 
@@ -50,6 +52,8 @@ class ReportLabels {
   final String vat;
   final String totalCosts;
   final String breakeven;
+  final String regionTurkey;
+  final String regionGlobal;
   final String footer;
 }
 
@@ -87,6 +91,10 @@ Future<Uint8List> buildReportPdf({
   final currency = inputs.currency;
   final isLoss = result.isLoss;
   final netColor = isLoss ? danger : ink;
+
+  final regionLabel = marketplace.region == MarketplaceRegion.tr
+      ? labels.regionTurkey
+      : labels.regionGlobal;
 
   pw.Widget kv(String label, String value, {bool dim = false}) {
     return pw.Padding(
@@ -186,7 +194,7 @@ Future<Uint8List> buildReportPdf({
             ),
             pw.SizedBox(height: 22),
 
-            // -------- Title + marketplace --------
+            // -------- Title + item name + marketplace --------
             pw.Text(
               labels.title,
               style: pw.TextStyle(
@@ -196,6 +204,17 @@ Future<Uint8List> buildReportPdf({
                 letterSpacing: -0.6,
               ),
             ),
+            if (inputs.itemName != null) ...[
+              pw.SizedBox(height: 4),
+              pw.Text(
+                inputs.itemName!,
+                style: pw.TextStyle(
+                  font: medium,
+                  color: ink,
+                  fontSize: 13,
+                ),
+              ),
+            ],
             pw.SizedBox(height: 4),
             pw.Row(
               children: [
@@ -214,9 +233,7 @@ Future<Uint8List> buildReportPdf({
                     borderRadius: pw.BorderRadius.circular(99),
                   ),
                   child: pw.Text(
-                    marketplace.region == MarketplaceRegion.tr
-                        ? 'Türkiye'
-                        : 'Global',
+                    regionLabel,
                     style: pw.TextStyle(
                       font: medium,
                       color: muted,

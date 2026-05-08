@@ -10,6 +10,7 @@ class Marketplace {
     required this.region,
     required this.defaultCurrency,
     required this.defaultCommissionRate,
+    this.defaultVatRate = 0,
     this.fixedListingFee = 0,
     this.notes,
   });
@@ -27,6 +28,12 @@ class Marketplace {
 
   /// Default commission as a decimal fraction (0.18 = 18%).
   final double defaultCommissionRate;
+
+  /// Default VAT/KDV rate as a decimal fraction. Pre-filled when the
+  /// user picks the marketplace; can be overridden in the form.
+  /// Turkish marketplaces default to 0.20 (KDV), US/EU global ones to 0
+  /// because tax handling there is item- or seller-specific.
+  final double defaultVatRate;
 
   /// Fixed per-listing fee in the marketplace's default currency
   /// (e.g. Etsy's $0.20 listing fee).

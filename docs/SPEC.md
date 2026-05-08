@@ -127,7 +127,7 @@ because they are the primary acquisition driver from research:
 
 | Version | Scope                                                                                                                               | Target            |
 | ------- | ----------------------------------------------------------------------------------------------------------------------------------- | ----------------- |
-| 0.1     | Calculator MVP, marketplaces preset list, Material 3 dark theme, EN + TR i18n, history + settings stubs, **PDF report + system share** (free; will be gated to Pro when paywall lands) | ✅ this commit    |
+| 0.1     | Calculator MVP, marketplaces preset list, Material 3 dark theme, EN + TR i18n with **in-app language switcher** (locale-aware marketplace order + Trendyol-vs-Amazon defaults + auto KDV/VAT prefill), **brand AppBar**, **item name input**, **PDF report + system share** (free; will be gated to Pro when paywall lands), **History gated behind Kârly Pro paywall** (RevenueCat stub — UI complete, billing wires up in v0.2) | ✅ this commit    |
 | 0.2     | Save calculations to local storage (SharedPreferences → drift if growth), History list, RevenueCat paywall, AdMob banner on free    | next 2 weeks      |
 | 0.3     | Cross-marketplace SKU compare screen, multi-currency w/ FX rates, CSV export                                                        | +2 weeks          |
 | 0.4     | Per-category commission tables for TR marketplaces, KDV mode, PDF export                                                            | +3 weeks          |

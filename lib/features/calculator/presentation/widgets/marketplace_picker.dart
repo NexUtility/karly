@@ -18,13 +18,8 @@ class MarketplacePicker extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final theme = Theme.of(context);
-
-    final tr = defaultMarketplaces
-        .where((m) => m.region == MarketplaceRegion.tr)
-        .toList();
-    final global = defaultMarketplaces
-        .where((m) => m.region == MarketplaceRegion.global)
-        .toList();
+    final lang = Localizations.localeOf(context).languageCode;
+    final sections = orderedMarketplaceSections(lang);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -33,7 +28,7 @@ class MarketplacePicker extends StatelessWidget {
         const SizedBox(height: 8),
         InkWell(
           borderRadius: BorderRadius.circular(10),
-          onTap: () => _open(context, tr, global),
+          onTap: () => _open(context, sections),
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
             decoration: BoxDecoration(
@@ -73,9 +68,9 @@ class MarketplacePicker extends StatelessWidget {
 
   Future<void> _open(
     BuildContext context,
-    List<Marketplace> tr,
-    List<Marketplace> global,
+    List<({MarketplaceRegion region, List<Marketplace> items})> sections,
   ) async {
+    final l10n = AppLocalizations.of(context);
     final picked = await showModalBottomSheet<Marketplace>(
       context: context,
       isScrollControlled: true,
@@ -86,10 +81,15 @@ class MarketplacePicker extends StatelessWidget {
           child: ListView(
             shrinkWrap: true,
             children: [
-              _sectionHeader(theme, 'Türkiye'),
-              ...tr.map((m) => _tile(ctx, m, selectedId)),
-              _sectionHeader(theme, 'Global'),
-              ...global.map((m) => _tile(ctx, m, selectedId)),
+              for (final s in sections) ...[
+                _sectionHeader(
+                  theme,
+                  s.region == MarketplaceRegion.tr
+                      ? l10n.regionTurkey
+                      : l10n.regionGlobal,
+                ),
+                ...s.items.map((m) => _tile(ctx, m, selectedId)),
+              ],
               const SizedBox(height: 16),
             ],
           ),
