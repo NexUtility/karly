@@ -12,7 +12,7 @@ class CalcInputs {
     required this.commissionRate,
     this.itemName,
     this.shippingCost = 0,
-    this.adSpend = 0,
+    this.operationalCosts = 0,
     this.fixedListingFee = 0,
     this.vatRate = 0,
     this.currency = 'USD',
@@ -29,7 +29,12 @@ class CalcInputs {
   final double commissionRate;
 
   final double shippingCost;
-  final double adSpend;
+
+  /// Per-sale operational costs that aren't already separate fields —
+  /// ad spend, packaging, returns, fulfillment, etc. The user enters
+  /// the total they want to allocate to this single sale.
+  final double operationalCosts;
+
   final double fixedListingFee;
 
   /// VAT / KDV as a decimal fraction (0.20 = 20%).
@@ -44,7 +49,7 @@ class CalcInputs {
     double? sellPrice,
     double? commissionRate,
     double? shippingCost,
-    double? adSpend,
+    double? operationalCosts,
     double? fixedListingFee,
     double? vatRate,
     String? currency,
@@ -55,7 +60,7 @@ class CalcInputs {
       sellPrice: sellPrice ?? this.sellPrice,
       commissionRate: commissionRate ?? this.commissionRate,
       shippingCost: shippingCost ?? this.shippingCost,
-      adSpend: adSpend ?? this.adSpend,
+      operationalCosts: operationalCosts ?? this.operationalCosts,
       fixedListingFee: fixedListingFee ?? this.fixedListingFee,
       vatRate: vatRate ?? this.vatRate,
       currency: currency ?? this.currency,

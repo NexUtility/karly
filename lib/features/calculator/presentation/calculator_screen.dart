@@ -29,7 +29,7 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
   final _sellCtrl = TextEditingController();
   final _commissionCtrl = TextEditingController();
   final _shippingCtrl = TextEditingController();
-  final _adSpendCtrl = TextEditingController();
+  final _opCostsCtrl = TextEditingController();
   final _vatCtrl = TextEditingController();
 
   CalcResult? _result;
@@ -57,7 +57,7 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
     _sellCtrl.dispose();
     _commissionCtrl.dispose();
     _shippingCtrl.dispose();
-    _adSpendCtrl.dispose();
+    _opCostsCtrl.dispose();
     _vatCtrl.dispose();
     super.dispose();
   }
@@ -87,7 +87,7 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
       sellPrice: _parse(_sellCtrl.text),
       commissionRate: _parse(_commissionCtrl.text) / 100,
       shippingCost: _parse(_shippingCtrl.text),
-      adSpend: _parse(_adSpendCtrl.text),
+      operationalCosts: _parse(_opCostsCtrl.text),
       fixedListingFee: m.fixedListingFee,
       vatRate: _parse(_vatCtrl.text) / 100,
       currency: m.defaultCurrency,
@@ -105,7 +105,7 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
       _costCtrl.clear();
       _sellCtrl.clear();
       _shippingCtrl.clear();
-      _adSpendCtrl.clear();
+      _opCostsCtrl.clear();
       if (m != null) _applyMarketplace(m);
       _result = null;
       _lastInputs = null;
@@ -139,7 +139,7 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
         commissionRate: l10n.inputCommissionRate,
         vatRate: l10n.inputVatRate,
         shipping: l10n.inputShipping,
-        adSpend: l10n.inputAdSpend,
+        operationalCosts: l10n.inputOperationalCosts,
         commission: l10n.resultCommission,
         vat: l10n.resultVat,
         totalCosts: l10n.pdfTotalCosts,
@@ -275,8 +275,9 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
                     const SizedBox(width: 12),
                     Expanded(
                       child: _amountField(
-                        controller: _adSpendCtrl,
-                        label: l10n.inputAdSpend,
+                        controller: _opCostsCtrl,
+                        label: l10n.inputOperationalCosts,
+                        hint: l10n.inputOperationalCostsHint,
                         currency: marketplace.defaultCurrency,
                       ),
                     ),

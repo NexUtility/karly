@@ -38,13 +38,13 @@ class CalcResult {
 /// Computes:
 ///   commission = sellPrice * commissionRate + fixedListingFee
 ///   vat        = sellPrice * vatRate
-///   totalCosts = itemCost + shippingCost + adSpend + commission + vat
+///   totalCosts = itemCost + shippingCost + operationalCosts + commission + vat
 ///   netProfit  = sellPrice - totalCosts
 CalcResult calculateProfit(CalcInputs i) {
   final commission = i.sellPrice * i.commissionRate + i.fixedListingFee;
   final vat = i.sellPrice * i.vatRate;
   final totalCosts =
-      i.itemCost + i.shippingCost + i.adSpend + commission + vat;
+      i.itemCost + i.shippingCost + i.operationalCosts + commission + vat;
   final netProfit = i.sellPrice - totalCosts;
 
   final marginPct = i.sellPrice == 0 ? 0.0 : (netProfit / i.sellPrice) * 100;
@@ -52,10 +52,10 @@ CalcResult calculateProfit(CalcInputs i) {
 
   // Solve sellPrice for netProfit = 0:
   //   sellPrice * (1 - commissionRate - vatRate)
-  //     = itemCost + shippingCost + adSpend + fixedListingFee
+  //     = itemCost + shippingCost + operationalCosts + fixedListingFee
   final variableFraction = 1 - i.commissionRate - i.vatRate;
   final fixedCosts =
-      i.itemCost + i.shippingCost + i.adSpend + i.fixedListingFee;
+      i.itemCost + i.shippingCost + i.operationalCosts + i.fixedListingFee;
   final breakeven = variableFraction <= 0
       ? double.infinity
       : fixedCosts / variableFraction;

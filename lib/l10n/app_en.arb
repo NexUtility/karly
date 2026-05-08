@@ -31,7 +31,8 @@
   "inputSellPriceHint": "Listing price on the marketplace",
   "inputCommissionRate": "Commission %",
   "inputShipping": "Shipping cost",
-  "inputAdSpend": "Ad spend",
+  "inputOperationalCosts": "Operational costs",
+  "inputOperationalCostsHint": "Ads, packaging, returns, fulfillment...",
   "inputVatRate": "VAT %",
 
   "resultNetProfit": "Net profit",

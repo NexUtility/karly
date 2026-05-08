@@ -31,7 +31,8 @@
   "inputSellPriceHint": "Pazaryerindeki liste fiyatı",
   "inputCommissionRate": "Komisyon %",
   "inputShipping": "Kargo bedeli",
-  "inputAdSpend": "Reklam harcaması",
+  "inputOperationalCosts": "Operasyonel maliyetler",
+  "inputOperationalCostsHint": "Reklam, paketleme, iade, fulfillment...",
   "inputVatRate": "KDV %",
 
   "resultNetProfit": "Net kâr",

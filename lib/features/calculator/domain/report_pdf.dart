@@ -25,7 +25,7 @@ class ReportLabels {
     required this.commissionRate,
     required this.vatRate,
     required this.shipping,
-    required this.adSpend,
+    required this.operationalCosts,
     required this.commission,
     required this.vat,
     required this.totalCosts,
@@ -47,7 +47,7 @@ class ReportLabels {
   final String commissionRate;
   final String vatRate;
   final String shipping;
-  final String adSpend;
+  final String operationalCosts;
   final String commission;
   final String vat;
   final String totalCosts;
@@ -319,9 +319,9 @@ Future<Uint8List> buildReportPdf({
               dim: inputs.shippingCost == 0,
             ),
             kv(
-              labels.adSpend,
-              formatCurrency(inputs.adSpend, currency: currency),
-              dim: inputs.adSpend == 0,
+              labels.operationalCosts,
+              formatCurrency(inputs.operationalCosts, currency: currency),
+              dim: inputs.operationalCosts == 0,
             ),
 
             sectionHeader(labels.sectionResults),
