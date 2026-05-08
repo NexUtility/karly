@@ -128,14 +128,19 @@ because they are the primary acquisition driver from research:
 | 0.2     | Save calculations to local storage (SharedPreferences → drift if growth), History list, RevenueCat paywall, AdMob banner on free    | next 2 weeks      |
 | 0.3     | Cross-marketplace SKU compare screen, multi-currency w/ FX rates, CSV export                                                        | +2 weeks          |
 | 0.4     | Per-category commission tables for TR marketplaces, KDV mode, PDF export                                                            | +3 weeks          |
-| 1.0     | App Store + Play Store submission with full localized listings (EN + TR + DE + ES at minimum), screenshots, marketing site presence | +5 weeks from 0.1 |
+| 1.0     | **Play Store** submission with full localized listings (EN + TR + DE + ES at minimum), screenshots, marketing site presence. App Store deferred. | +5 weeks from 0.1 |
 
 ## Constraints
 
-- **Bundle ID is permanent:** `com.nexutility.karly`. Never changes after first
-  store submission.
-- **Display name:** `Kârly` (with circumflex) on both stores and the home screen.
-  Apple/Google both accept Unicode in `CFBundleDisplayName` and `android:label`.
+- **Launch platform: Android only.** iOS is deferred until Android revenue
+  covers the Apple Developer Program fee ($99/yr) and a Mac for the build
+  toolchain. The `ios/` folder stays in the repo so we can ship to the App
+  Store later without rescaffolding — but every roadmap milestone below is
+  scoped to Android until further notice.
+- **Bundle ID / Application ID is permanent:** `com.nexutility.karly`. Never
+  changes after first Play Store submission.
+- **Display name:** `Kârly` (with circumflex) on the Play Store listing and
+  the home screen. `android:label` accepts Unicode.
 - **Languages at launch:** English (default fallback) + Turkish.
   Add German and Spanish before 1.0 to match the EU expansion path of TR sellers.
 - **Privacy / Terms / Support URLs:** all served from `nexutility.com/*`.

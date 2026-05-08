@@ -14,12 +14,18 @@ Full product spec: [`docs/SPEC.md`](docs/SPEC.md).
 ```bash
 flutter pub get
 flutter gen-l10n            # generate AppLocalizations from arb files
-flutter run                 # dev run on the connected device / simulator
+flutter run                 # dev run on the connected Android device / emulator
 flutter analyze             # static analysis
 flutter test                # unit + widget tests
-flutter build apk           # Android release build
-flutter build ios            # iOS release build (macOS only)
+flutter build apk           # Android release APK
+flutter build appbundle     # Android release AAB (Play Store upload)
 ```
+
+> **Platform scope.** Android is our launch platform. The `ios/` folder is kept
+> in the repo so we can ship to iOS later without rescaffolding, but iOS builds
+> are not run from CI yet — they require macOS + Xcode + an active Apple
+> Developer Program membership ($99/yr), which the studio is deferring until
+> Android revenue covers it.
 
 ## Project layout
 
