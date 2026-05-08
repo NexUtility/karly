@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../../l10n/generated/app_localizations.dart';
 import '../../data/marketplace.dart';
 import '../../data/marketplaces.dart';
+import '../marketplace_notes.dart';
 
 class MarketplacePicker extends StatelessWidget {
   const MarketplacePicker({
@@ -110,13 +111,15 @@ class MarketplacePicker extends StatelessWidget {
   }
 
   Widget _tile(BuildContext context, Marketplace m, String selectedId) {
+    final l10n = AppLocalizations.of(context);
     final theme = Theme.of(context);
     final selected = m.id == selectedId;
+    final note = marketplaceNotesFor(m, l10n);
     return ListTile(
       title: Text(m.name, style: const TextStyle(fontWeight: FontWeight.w500)),
-      subtitle: m.notes != null
+      subtitle: note != null
           ? Text(
-              m.notes!,
+              note,
               style: theme.textTheme.bodySmall,
               maxLines: 2,
               overflow: TextOverflow.ellipsis,

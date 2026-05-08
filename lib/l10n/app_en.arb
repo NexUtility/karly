@@ -12,6 +12,14 @@
   "marketplacePickHint": "Pick a marketplace",
   "regionTurkey": "Türkiye",
   "regionGlobal": "Global",
+
+  "marketplaceNotesTrendyol": "Category-specific rates apply. KDV charged separately.",
+  "marketplaceNotesHepsiburada": "Category-specific rates apply.",
+  "marketplaceNotesAmazonUs": "Referral fee. FBA fees not included by default.",
+  "marketplaceNotesEtsy": "6.5% transaction + $0.20 listing fee. Payment processing extra.",
+  "marketplaceNotesEbay": "Final value fee — varies by category.",
+  "marketplaceNotesShopify": "2.9% + $0.30 payment processing on Shopify Payments.",
+  "marketplaceNotesCustom": "Set commission and fees manually.",
   "categoryLabel": "Category",
   "currencyLabel": "Currency",
 

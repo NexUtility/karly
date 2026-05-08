@@ -11,6 +11,7 @@ import '../data/marketplaces.dart';
 import '../domain/calculate.dart';
 import '../domain/inputs.dart';
 import '../domain/report_pdf.dart';
+import 'marketplace_notes.dart';
 import 'widgets/marketplace_picker.dart';
 import 'widgets/result_card.dart';
 
@@ -212,9 +213,12 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
                   selectedId: marketplace.id,
                   onChanged: _onMarketplaceChanged,
                 ),
-                if (marketplace.notes != null) ...[
+                if (marketplaceNotesFor(marketplace, l10n) != null) ...[
                   const SizedBox(height: 6),
-                  Text(marketplace.notes!, style: theme.textTheme.bodySmall),
+                  Text(
+                    marketplaceNotesFor(marketplace, l10n)!,
+                    style: theme.textTheme.bodySmall,
+                  ),
                 ],
                 const SizedBox(height: 18),
                 TextField(

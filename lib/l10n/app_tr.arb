@@ -12,6 +12,14 @@
   "marketplacePickHint": "Pazaryeri seç",
   "regionTurkey": "Türkiye",
   "regionGlobal": "Global",
+
+  "marketplaceNotesTrendyol": "Komisyon kategoriye göre değişir. KDV ayrı tahsil edilir.",
+  "marketplaceNotesHepsiburada": "Komisyon kategoriye göre değişir.",
+  "marketplaceNotesAmazonUs": "Referral fee. FBA ücretleri dahil değil.",
+  "marketplaceNotesEtsy": "%6,5 işlem + $0,20 listeleme ücreti. Ödeme işleme ayrı.",
+  "marketplaceNotesEbay": "Final value fee — kategoriye göre değişir.",
+  "marketplaceNotesShopify": "%2,9 + $0,30 ödeme işleme (Shopify Payments).",
+  "marketplaceNotesCustom": "Komisyon ve ücretleri manuel ayarla.",
   "categoryLabel": "Kategori",
   "currencyLabel": "Para birimi",
 

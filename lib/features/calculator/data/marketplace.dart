@@ -12,10 +12,10 @@ class Marketplace {
     required this.defaultCommissionRate,
     this.defaultVatRate = 0,
     this.fixedListingFee = 0,
-    this.notes,
   });
 
-  /// Stable identifier used in storage.
+  /// Stable identifier used in storage and as the lookup key for
+  /// localized presentation strings (notes, descriptions).
   final String id;
 
   /// Display name (e.g. "Trendyol", "Amazon US").
@@ -38,9 +38,6 @@ class Marketplace {
   /// Fixed per-listing fee in the marketplace's default currency
   /// (e.g. Etsy's $0.20 listing fee).
   final double fixedListingFee;
-
-  /// Free-form notes (e.g. "+ KDV", "Per-category rates vary").
-  final String? notes;
 }
 
 enum MarketplaceRegion { tr, global }

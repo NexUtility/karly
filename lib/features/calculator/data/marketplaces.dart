@@ -14,7 +14,6 @@ const List<Marketplace> defaultMarketplaces = [
     defaultCurrency: 'TRY',
     defaultCommissionRate: 0.18,
     defaultVatRate: 0.20,
-    notes: 'Category-specific rates apply. KDV charged separately.',
   ),
   Marketplace(
     id: 'hepsiburada',
@@ -23,7 +22,6 @@ const List<Marketplace> defaultMarketplaces = [
     defaultCurrency: 'TRY',
     defaultCommissionRate: 0.155,
     defaultVatRate: 0.20,
-    notes: 'Category-specific rates apply.',
   ),
   Marketplace(
     id: 'n11',
@@ -57,7 +55,6 @@ const List<Marketplace> defaultMarketplaces = [
     region: MarketplaceRegion.global,
     defaultCurrency: 'USD',
     defaultCommissionRate: 0.15,
-    notes: 'Referral fee. FBA fees not included by default.',
   ),
   Marketplace(
     id: 'etsy',
@@ -66,7 +63,6 @@ const List<Marketplace> defaultMarketplaces = [
     defaultCurrency: 'USD',
     defaultCommissionRate: 0.065,
     fixedListingFee: 0.20,
-    notes: '6.5% transaction + \$0.20 listing fee. Payment processing extra.',
   ),
   Marketplace(
     id: 'ebay',
@@ -74,7 +70,6 @@ const List<Marketplace> defaultMarketplaces = [
     region: MarketplaceRegion.global,
     defaultCurrency: 'USD',
     defaultCommissionRate: 0.135,
-    notes: 'Final value fee — varies by category.',
   ),
   Marketplace(
     id: 'shopify',
@@ -82,7 +77,6 @@ const List<Marketplace> defaultMarketplaces = [
     region: MarketplaceRegion.global,
     defaultCurrency: 'USD',
     defaultCommissionRate: 0.029,
-    notes: '2.9% + \$0.30 payment processing on Shopify Payments.',
   ),
   Marketplace(
     id: 'custom',
@@ -90,7 +84,6 @@ const List<Marketplace> defaultMarketplaces = [
     region: MarketplaceRegion.global,
     defaultCurrency: 'USD',
     defaultCommissionRate: 0,
-    notes: 'Set commission and fees manually.',
   ),
 ];
 
