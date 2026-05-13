@@ -1,9 +1,11 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/locale_provider.dart';
 import '../../../core/subscription_provider.dart';
+import '../../../core/usage_quota_provider.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../../../theme/colors.dart';
 import '../../paywall/presentation/paywall_screen.dart';
@@ -22,6 +24,7 @@ class SettingsScreen extends ConsumerWidget {
     final theme = Theme.of(context);
     final locale = ref.watch(localeProvider);
     final subscription = ref.watch(subscriptionProvider);
+    final quotaAsync = ref.watch(usageQuotaProvider);
 
     return Scaffold(
       appBar: AppBar(title: Text(l10n.navSettings)),
@@ -30,6 +33,21 @@ class SettingsScreen extends ConsumerWidget {
         children: [
           _section(theme, l10n.settingsSubscription),
           _SubscriptionTile(state: subscription),
+          if (!subscription.isPro)
+            quotaAsync.when(
+              data: (q) => Padding(
+                padding:
+                    const EdgeInsets.fromLTRB(20, 4, 20, 0),
+                child: Text(
+                  l10n.dailyCapCounter(q.reportsToday, kDailyFreeReportCap),
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
+                  ),
+                ),
+              ),
+              loading: () => const SizedBox.shrink(),
+              error: (_, _) => const SizedBox.shrink(),
+            ),
           const SizedBox(height: 8),
           _section(theme, l10n.settingsLanguage),
           _LanguageOption(
@@ -67,11 +85,33 @@ class SettingsScreen extends ConsumerWidget {
             url: _supportUrl,
           ),
           const SizedBox(height: 16),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-            child: Text(
-              l10n.settingsVersion(_version),
-              style: theme.textTheme.bodySmall,
+          GestureDetector(
+            onLongPress: kDebugMode
+                ? () {
+                    final next = subscription.isPro
+                        ? SubscriptionTier.free
+                        : SubscriptionTier.proAnnual;
+                    ref
+                        .read(subscriptionProvider.notifier)
+                        .debugSetTier(next);
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(
+                          'DEBUG: tier = ${next.name}',
+                        ),
+                        duration: const Duration(seconds: 2),
+                        behavior: SnackBarBehavior.floating,
+                      ),
+                    );
+                  }
+                : null,
+            child: Padding(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+              child: Text(
+                l10n.settingsVersion(_version),
+                style: theme.textTheme.bodySmall,
+              ),
             ),
           ),
         ],

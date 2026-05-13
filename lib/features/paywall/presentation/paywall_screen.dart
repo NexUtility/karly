@@ -59,7 +59,7 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
                 child: IconButton(
                   icon: const Icon(Icons.close_rounded),
                   onPressed: () => Navigator.of(context).maybePop(),
-                  tooltip: 'Close',
+                  tooltip: l10n.actionClose,
                 ),
               ),
             ],
@@ -68,11 +68,9 @@ class _PaywallScreenState extends ConsumerState<PaywallScreen> {
             const SizedBox(height: 24),
             _FeatureList(
               items: [
-                l10n.paywallFeatureHistory,
-                l10n.paywallFeatureCompare,
-                l10n.paywallFeatureCurrency,
-                l10n.paywallFeatureExport,
-                l10n.paywallFeatureAds,
+                l10n.paywallFeatureSaveHistory,
+                l10n.paywallFeatureFilter,
+                l10n.paywallFeatureUnlimitedReports,
               ],
             ),
             const SizedBox(height: 24),
@@ -363,4 +361,15 @@ class _PlanCard extends StatelessWidget {
       ),
     );
   }
+}
+
+/// Helper that opens the full-screen paywall. Use from any screen
+/// that hits a Pro-gated feature.
+Future<void> openPaywall(BuildContext context) {
+  return Navigator.of(context).push(
+    MaterialPageRoute(
+      builder: (_) => const PaywallScreen(),
+      fullscreenDialog: true,
+    ),
+  );
 }

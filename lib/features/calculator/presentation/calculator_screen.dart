@@ -4,14 +4,20 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:printing/printing.dart';
 
+import '../../../core/subscription_provider.dart';
+import '../../../core/usage_quota_provider.dart';
 import '../../../l10n/generated/app_localizations.dart';
 import '../../../theme/colors.dart';
+import '../../history/providers.dart';
+import '../../paywall/presentation/pro_gate_dialogs.dart';
+import '../data/category.dart';
 import '../data/marketplace.dart';
 import '../data/marketplaces.dart';
 import '../domain/calculate.dart';
 import '../domain/inputs.dart';
 import '../domain/report_pdf.dart';
 import 'marketplace_notes.dart';
+import 'widgets/category_picker.dart';
 import 'widgets/marketplace_picker.dart';
 import 'widgets/result_card.dart';
 
@@ -24,6 +30,7 @@ class CalculatorScreen extends ConsumerStatefulWidget {
 
 class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
   Marketplace? _marketplace;
+  Category? _category;
   final _itemNameCtrl = TextEditingController();
   final _costCtrl = TextEditingController();
   final _sellCtrl = TextEditingController();
@@ -35,6 +42,8 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
   CalcResult? _result;
   CalcInputs? _lastInputs;
   bool _sharing = false;
+  bool _saving = false;
+  bool _saved = false;
 
   @override
   void didChangeDependencies() {
@@ -76,13 +85,16 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
     setState(() => _applyMarketplace(m));
   }
 
-  void _onCalculate() {
-    final m = _marketplace;
-    if (m == null) return;
-    final inputs = CalcInputs(
+  void _onCategoryChanged(Category c) {
+    setState(() => _category = c);
+  }
+
+  CalcInputs _buildInputs(Marketplace m) {
+    return CalcInputs(
       itemName: _itemNameCtrl.text.trim().isEmpty
           ? null
           : _itemNameCtrl.text.trim(),
+      categoryId: _category?.id,
       itemCost: _parse(_costCtrl.text),
       sellPrice: _parse(_sellCtrl.text),
       commissionRate: _parse(_commissionCtrl.text) / 100,
@@ -92,9 +104,16 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
       vatRate: _parse(_vatCtrl.text) / 100,
       currency: m.defaultCurrency,
     );
+  }
+
+  void _onCalculate() {
+    final m = _marketplace;
+    if (m == null) return;
+    final inputs = _buildInputs(m);
     setState(() {
       _result = calculateProfit(inputs);
       _lastInputs = inputs;
+      _saved = false;
     });
   }
 
@@ -102,6 +121,7 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
     final m = _marketplace;
     setState(() {
       _itemNameCtrl.clear();
+      _category = null;
       _costCtrl.clear();
       _sellCtrl.clear();
       _shippingCtrl.clear();
@@ -109,6 +129,7 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
       if (m != null) _applyMarketplace(m);
       _result = null;
       _lastInputs = null;
+      _saved = false;
     });
   }
 
@@ -118,8 +139,21 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
     final m = _marketplace;
     if (result == null || inputs == null || m == null || _sharing) return;
 
+    // Gate on daily cap for free users. Pro users skip the check.
+    final subscription = ref.read(subscriptionProvider);
+    if (!subscription.isPro) {
+      final quota = await ref.read(usageQuotaProvider.future);
+      if (!quota.freeUserCanShareMore()) {
+        if (!mounted) return;
+        await showDailyCapDialog(context);
+        return;
+      }
+    }
+
+    if (!mounted) return;
     setState(() => _sharing = true);
     try {
+      if (!mounted) return;
       final l10n = AppLocalizations.of(context);
       final locale = Localizations.localeOf(context);
       final dateStr = DateFormat.yMMMMd(
@@ -147,6 +181,7 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
         regionTurkey: l10n.regionTurkey,
         regionGlobal: l10n.regionGlobal,
         footer: l10n.pdfFooter,
+        categoryName: _category?.displayName(l10n),
       );
 
       final bytes = await buildReportPdf(
@@ -168,6 +203,10 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
         filename: filename,
         subject: l10n.pdfShareSubject,
       );
+
+      if (!subscription.isPro) {
+        await ref.read(usageQuotaProvider.notifier).recordReportShared();
+      }
     } catch (e) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
@@ -181,6 +220,40 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
     }
   }
 
+  Future<void> _onSave() async {
+    final result = _result;
+    final inputs = _lastInputs;
+    final m = _marketplace;
+    if (result == null || inputs == null || m == null || _saving) return;
+
+    final subscription = ref.read(subscriptionProvider);
+    if (!subscription.isPro) {
+      await showSaveProGateDialog(context);
+      return;
+    }
+
+    setState(() => _saving = true);
+    try {
+      await ref.read(historyProvider.notifier).add(
+            inputs: inputs,
+            result: result,
+            marketplaceId: m.id,
+          );
+      if (!mounted) return;
+      setState(() => _saved = true);
+      final l10n = AppLocalizations.of(context);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(l10n.savedToHistory),
+          duration: const Duration(seconds: 2),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+    } finally {
+      if (mounted) setState(() => _saving = false);
+    }
+  }
+
   double _parse(String raw) {
     if (raw.trim().isEmpty) return 0;
     return double.tryParse(raw.replaceAll(',', '.')) ?? 0;
@@ -191,6 +264,8 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
     final l10n = AppLocalizations.of(context);
     final theme = Theme.of(context);
     final marketplace = _marketplace;
+    final subscription = ref.watch(subscriptionProvider);
+    final quotaAsync = ref.watch(usageQuotaProvider);
 
     return Scaffold(
       appBar: AppBar(
@@ -220,7 +295,12 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
                     style: theme.textTheme.bodySmall,
                   ),
                 ],
-                const SizedBox(height: 18),
+                const SizedBox(height: 14),
+                CategoryPicker(
+                  selected: _category,
+                  onChanged: _onCategoryChanged,
+                ),
+                const SizedBox(height: 14),
                 TextField(
                   controller: _itemNameCtrl,
                   textInputAction: TextInputAction.next,
@@ -321,6 +401,59 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
                             )
                           : const Icon(Icons.ios_share_rounded, size: 18),
                       label: Text(l10n.actionSharePdf),
+                    ),
+                  ),
+                  if (!subscription.isPro)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 6),
+                      child: quotaAsync.when(
+                        data: (q) {
+                          final remaining =
+                              (kDailyFreeReportCap - q.reportsToday).clamp(
+                            0,
+                            kDailyFreeReportCap,
+                          );
+                          return Text(
+                            l10n.dailyCapCounter(
+                              q.reportsToday,
+                              kDailyFreeReportCap,
+                            ),
+                            style: theme.textTheme.bodySmall?.copyWith(
+                              color: remaining == 0
+                                  ? BrandColors.warning
+                                  : theme.colorScheme.onSurface
+                                      .withValues(alpha: 0.55),
+                            ),
+                            textAlign: TextAlign.center,
+                          );
+                        },
+                        loading: () => const SizedBox.shrink(),
+                        error: (_, _) => const SizedBox.shrink(),
+                      ),
+                    ),
+                  const SizedBox(height: 8),
+                  SizedBox(
+                    width: double.infinity,
+                    child: OutlinedButton.icon(
+                      onPressed: _saving || _saved ? null : _onSave,
+                      icon: _saving
+                          ? SizedBox(
+                              width: 16,
+                              height: 16,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                color: theme.colorScheme.onSurface,
+                              ),
+                            )
+                          : Icon(
+                              _saved
+                                  ? Icons.check_rounded
+                                  : Icons.bookmark_add_outlined,
+                              size: 18,
+                            ),
+                      label: Text(
+                        _saved ? l10n.savedToHistory : l10n.actionSaveToHistory,
+                      ),
                     ),
                   ),
                 ],

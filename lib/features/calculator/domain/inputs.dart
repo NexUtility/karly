@@ -11,6 +11,7 @@ class CalcInputs {
     required this.sellPrice,
     required this.commissionRate,
     this.itemName,
+    this.categoryId,
     this.shippingCost = 0,
     this.operationalCosts = 0,
     this.fixedListingFee = 0,
@@ -19,8 +20,12 @@ class CalcInputs {
   });
 
   /// Optional human-readable name of the item being sold (e.g. "Black hoodie XL").
-  /// Shown in the PDF report header and the future History list.
+  /// Shown in the PDF report header and the History list.
   final String? itemName;
+
+  /// Optional category id drawn from [Category.id]. Persisted on
+  /// saved entries and used as the History filter key.
+  final String? categoryId;
 
   final double itemCost;
   final double sellPrice;
@@ -45,6 +50,7 @@ class CalcInputs {
 
   CalcInputs copyWith({
     String? itemName,
+    String? categoryId,
     double? itemCost,
     double? sellPrice,
     double? commissionRate,
@@ -56,6 +62,7 @@ class CalcInputs {
   }) {
     return CalcInputs(
       itemName: itemName ?? this.itemName,
+      categoryId: categoryId ?? this.categoryId,
       itemCost: itemCost ?? this.itemCost,
       sellPrice: sellPrice ?? this.sellPrice,
       commissionRate: commissionRate ?? this.commissionRate,
@@ -66,4 +73,30 @@ class CalcInputs {
       currency: currency ?? this.currency,
     );
   }
+
+  Map<String, dynamic> toJson() => {
+        'itemName': itemName,
+        'categoryId': categoryId,
+        'itemCost': itemCost,
+        'sellPrice': sellPrice,
+        'commissionRate': commissionRate,
+        'shippingCost': shippingCost,
+        'operationalCosts': operationalCosts,
+        'fixedListingFee': fixedListingFee,
+        'vatRate': vatRate,
+        'currency': currency,
+      };
+
+  factory CalcInputs.fromJson(Map<String, dynamic> json) => CalcInputs(
+        itemName: json['itemName'] as String?,
+        categoryId: json['categoryId'] as String?,
+        itemCost: (json['itemCost'] as num).toDouble(),
+        sellPrice: (json['sellPrice'] as num).toDouble(),
+        commissionRate: (json['commissionRate'] as num).toDouble(),
+        shippingCost: (json['shippingCost'] as num? ?? 0).toDouble(),
+        operationalCosts: (json['operationalCosts'] as num? ?? 0).toDouble(),
+        fixedListingFee: (json['fixedListingFee'] as num? ?? 0).toDouble(),
+        vatRate: (json['vatRate'] as num? ?? 0).toDouble(),
+        currency: json['currency'] as String? ?? 'USD',
+      );
 }

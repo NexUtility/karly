@@ -33,6 +33,7 @@ class ReportLabels {
     required this.regionTurkey,
     required this.regionGlobal,
     required this.footer,
+    this.categoryName,
   });
 
   final String title;
@@ -55,6 +56,10 @@ class ReportLabels {
   final String regionTurkey;
   final String regionGlobal;
   final String footer;
+
+  /// Optional localized category name. Shown next to the marketplace
+  /// + region pill in the header when present.
+  final String? categoryName;
 }
 
 /// Builds an A4 profit report from a single calculation.
@@ -216,13 +221,15 @@ Future<Uint8List> buildReportPdf({
               ),
             ],
             pw.SizedBox(height: 4),
-            pw.Row(
+            pw.Wrap(
+              spacing: 8,
+              runSpacing: 4,
+              crossAxisAlignment: pw.WrapCrossAlignment.center,
               children: [
                 pw.Text(
                   marketplace.name,
                   style: pw.TextStyle(color: muted, fontSize: 11),
                 ),
-                pw.SizedBox(width: 8),
                 pw.Container(
                   padding: const pw.EdgeInsets.symmetric(
                     horizontal: 6,
@@ -242,6 +249,26 @@ Future<Uint8List> buildReportPdf({
                     ),
                   ),
                 ),
+                if (labels.categoryName != null)
+                  pw.Container(
+                    padding: const pw.EdgeInsets.symmetric(
+                      horizontal: 6,
+                      vertical: 1.5,
+                    ),
+                    decoration: pw.BoxDecoration(
+                      border: pw.Border.all(color: border),
+                      borderRadius: pw.BorderRadius.circular(99),
+                    ),
+                    child: pw.Text(
+                      labels.categoryName!,
+                      style: pw.TextStyle(
+                        font: medium,
+                        color: muted,
+                        fontSize: 8.5,
+                        letterSpacing: 0.4,
+                      ),
+                    ),
+                  ),
               ],
             ),
             pw.SizedBox(height: 24),

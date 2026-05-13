@@ -31,6 +31,28 @@ class CalcResult {
   final double breakevenPrice;
 
   bool get isLoss => netProfit < 0;
+
+  Map<String, dynamic> toJson() => {
+        'netProfit': netProfit,
+        'marginPct': marginPct,
+        'roiPct': roiPct,
+        'commissionAmount': commissionAmount,
+        'vatAmount': vatAmount,
+        'totalCosts': totalCosts,
+        'breakevenPrice': breakevenPrice.isFinite ? breakevenPrice : null,
+      };
+
+  factory CalcResult.fromJson(Map<String, dynamic> json) => CalcResult(
+        netProfit: (json['netProfit'] as num).toDouble(),
+        marginPct: (json['marginPct'] as num).toDouble(),
+        roiPct: (json['roiPct'] as num).toDouble(),
+        commissionAmount: (json['commissionAmount'] as num).toDouble(),
+        vatAmount: (json['vatAmount'] as num).toDouble(),
+        totalCosts: (json['totalCosts'] as num).toDouble(),
+        breakevenPrice: json['breakevenPrice'] == null
+            ? double.infinity
+            : (json['breakevenPrice'] as num).toDouble(),
+      );
 }
 
 /// Pure profit calculation. No I/O, no state — safe for unit testing.
