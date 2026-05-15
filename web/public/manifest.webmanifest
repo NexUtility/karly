@@ -1,0 +1,17 @@
+{
+  "name": "Kârly — Marketplace profit calculator",
+  "short_name": "Karly",
+  "description": "Cross-border marketplace seller profit calculator. Trendyol, Hepsiburada, Amazon, Etsy and more.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0a0a0a",
+  "theme_color": "#0a0a0a",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "type": "image/svg+xml",
+      "sizes": "any",
+      "purpose": "any"
+    }
+  ]
+}

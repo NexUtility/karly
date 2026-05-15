@@ -1,0 +1,117 @@
+---
+const path = Astro.url.pathname.replace(/\/$/, "") || "/";
+const links = [
+  { href: "/", label: "Overview" },
+  { href: "/support", label: "Support" },
+];
+const isActive = (href: string) => (href === "/" ? path === "/" : path.startsWith(href));
+---
+
+<header
+  class="sticky top-0 z-40 border-b border-border/60 bg-bg/70 backdrop-blur-xl backdrop-saturate-150"
+>
+  <div class="container-page flex h-14 items-center justify-between">
+    <a
+      href="/"
+      class="group flex items-center gap-2.5 font-semibold tracking-tight"
+      aria-label="Kârly — home"
+    >
+      <span
+        class="grid h-7 w-7 place-items-center rounded-md bg-accent text-accent-foreground font-mono text-sm font-bold transition-transform group-hover:rotate-3"
+        aria-hidden="true"
+      >
+        ₺
+      </span>
+      <span class="text-fg">Kârly</span>
+    </a>
+
+    <nav aria-label="Primary" class="hidden items-center gap-1 md:flex">
+      {
+        links.map((link) => (
+          <a
+            href={link.href}
+            class:list={[
+              "rounded-md px-3 py-1.5 text-sm transition-colors",
+              isActive(link.href)
+                ? "text-fg bg-bg-elev"
+                : "text-fg-muted hover:text-fg hover:bg-bg-elev/60",
+            ]}
+            aria-current={isActive(link.href) ? "page" : undefined}
+          >
+            {link.label}
+          </a>
+        ))
+      }
+    </nav>
+
+    <div class="flex items-center gap-2">
+      <span
+        class="hidden items-center gap-1.5 rounded-md border border-border bg-bg-elev/60 px-3 py-1.5 text-xs font-mono text-fg-muted backdrop-blur sm:inline-flex"
+      >
+        <span class="relative flex h-1.5 w-1.5">
+          <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent opacity-75"></span>
+          <span class="relative inline-flex h-1.5 w-1.5 rounded-full bg-accent"></span>
+        </span>
+        Google Play soon
+      </span>
+      <button
+        type="button"
+        id="nav-toggle"
+        class="grid h-9 w-9 place-items-center rounded-md text-fg-muted hover:text-fg hover:bg-bg-elev md:hidden"
+        aria-label="Open menu"
+        aria-expanded="false"
+        aria-controls="nav-mobile"
+      >
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path
+            d="M4 7h16M4 12h16M4 17h16"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+          ></path>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <div
+    id="nav-mobile"
+    hidden
+    class="border-t border-border/60 md:hidden"
+  >
+    <nav aria-label="Mobile" class="container-page flex flex-col py-2">
+      {
+        links.map((link) => (
+          <a
+            href={link.href}
+            class:list={[
+              "rounded-md px-3 py-2.5 text-sm transition-colors",
+              isActive(link.href) ? "text-fg bg-bg-elev" : "text-fg-muted hover:text-fg",
+            ]}
+          >
+            {link.label}
+          </a>
+        ))
+      }
+    </nav>
+  </div>
+</header>
+
+<script>
+  const btn = document.getElementById("nav-toggle");
+  const menu = document.getElementById("nav-mobile");
+  if (btn && menu) {
+    btn.addEventListener("click", () => {
+      const open = menu.hasAttribute("hidden");
+      if (open) {
+        menu.removeAttribute("hidden");
+        btn.setAttribute("aria-expanded", "true");
+        btn.setAttribute("aria-label", "Close menu");
+      } else {
+        menu.setAttribute("hidden", "");
+        btn.setAttribute("aria-expanded", "false");
+        btn.setAttribute("aria-label", "Open menu");
+      }
+    });
+  }
+</script>

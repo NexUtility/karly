@@ -1,0 +1,60 @@
+---
+import BaseLayout from "./BaseLayout.astro";
+
+interface Section {
+  id: string;
+  title: string;
+}
+
+interface Props {
+  title: string;
+  description?: string;
+  lastUpdated: string;
+  effectiveDate?: string;
+  sections: Section[];
+}
+
+const { title, description, lastUpdated, effectiveDate, sections } = Astro.props;
+---
+
+<BaseLayout title={title} description={description}>
+  <section class="container-page pt-16 pb-12 md:pt-24 md:pb-16">
+    <div class="grid gap-12 lg:grid-cols-[1fr_240px]">
+      <article class="max-w-2xl">
+        <p class="font-mono text-xs uppercase tracking-widest text-fg-subtle">Legal</p>
+        <h1 class="mt-3 text-4xl font-semibold tracking-tight md:text-5xl">
+          {title}
+        </h1>
+
+        <div class="mt-5 flex flex-wrap items-center gap-x-5 gap-y-1 text-xs font-mono text-fg-subtle">
+          <span>Last updated: {lastUpdated}</span>
+          {effectiveDate && <span>Effective: {effectiveDate}</span>}
+        </div>
+
+        <div class="prose-legal mt-10">
+          <slot />
+        </div>
+      </article>
+
+      <aside class="hidden lg:block">
+        <div class="sticky top-24">
+          <p class="font-mono text-xs uppercase tracking-widest text-fg-subtle">
+            On this page
+          </p>
+          <nav aria-label="Section navigation" class="mt-4 flex flex-col gap-1.5 border-l border-border pl-4">
+            {
+              sections.map((s) => (
+                <a
+                  href={`#${s.id}`}
+                  class="text-sm text-fg-muted transition-colors hover:text-fg"
+                >
+                  {s.title}
+                </a>
+              ))
+            }
+          </nav>
+        </div>
+      </aside>
+    </div>
+  </section>
+</BaseLayout>
