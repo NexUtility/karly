@@ -10,10 +10,10 @@ const isActive = (href: string) => (href === "/" ? path === "/" : path.startsWit
 <header
   class="sticky top-0 z-40 border-b border-border/60 bg-bg/70 backdrop-blur-xl backdrop-saturate-150"
 >
-  <div class="container-page flex h-14 items-center justify-between">
+  <div class="container-page flex h-16 items-center justify-between">
     <a
       href="/"
-      class="group flex items-center gap-2.5 font-semibold tracking-tight"
+      class="group inline-flex min-h-[44px] items-center gap-2.5 px-1 font-semibold tracking-tight"
       aria-label="Kârly — home"
     >
       <span
@@ -31,7 +31,7 @@ const isActive = (href: string) => (href === "/" ? path === "/" : path.startsWit
           <a
             href={link.href}
             class:list={[
-              "rounded-md px-3 py-1.5 text-sm transition-colors",
+              "inline-flex min-h-[44px] items-center rounded-md px-3 text-sm transition-colors",
               isActive(link.href)
                 ? "text-fg bg-bg-elev"
                 : "text-fg-muted hover:text-fg hover:bg-bg-elev/60",
@@ -57,7 +57,7 @@ const isActive = (href: string) => (href === "/" ? path === "/" : path.startsWit
       <button
         type="button"
         id="nav-toggle"
-        class="grid h-9 w-9 place-items-center rounded-md text-fg-muted hover:text-fg hover:bg-bg-elev md:hidden"
+        class="grid h-11 w-11 place-items-center rounded-md text-fg-muted hover:text-fg hover:bg-bg-elev md:hidden"
         aria-label="Open menu"
         aria-expanded="false"
         aria-controls="nav-mobile"
@@ -85,7 +85,7 @@ const isActive = (href: string) => (href === "/" ? path === "/" : path.startsWit
           <a
             href={link.href}
             class:list={[
-              "rounded-md px-3 py-2.5 text-sm transition-colors",
+              "inline-flex min-h-[44px] items-center rounded-md px-3 text-sm transition-colors",
               isActive(link.href) ? "text-fg bg-bg-elev" : "text-fg-muted hover:text-fg",
             ]}
           >
@@ -107,10 +107,13 @@ const isActive = (href: string) => (href === "/" ? path === "/" : path.startsWit
         menu.removeAttribute("hidden");
         btn.setAttribute("aria-expanded", "true");
         btn.setAttribute("aria-label", "Close menu");
+        const firstLink = menu.querySelector("a");
+        if (firstLink instanceof HTMLElement) firstLink.focus();
       } else {
         menu.setAttribute("hidden", "");
         btn.setAttribute("aria-expanded", "false");
         btn.setAttribute("aria-label", "Open menu");
+        btn.focus();
       }
     });
   }
