@@ -1,120 +1,37 @@
 ---
+// Sticky-blur nav with brand mark + section anchors + accent CTA.
+// On legal/support pages the anchors target index.astro#section.
 const path = Astro.url.pathname.replace(/\/$/, "") || "/";
+const isHome = path === "/";
+const prefix = isHome ? "" : "/";
+
 const links = [
-  { href: "/", label: "Overview" },
-  { href: "/support", label: "Support" },
+  { href: `${prefix}#how`, label: "How it works" },
+  { href: `${prefix}#markets`, label: "Marketplaces" },
+  { href: `${prefix}#pricing`, label: "Pricing" },
+  { href: `${prefix}#promises`, label: "Promises" },
 ];
-const isActive = (href: string) => (href === "/" ? path === "/" : path.startsWith(href));
 ---
 
-<header
-  class="sticky top-0 z-40 border-b border-border/60 bg-bg/70 backdrop-blur-xl backdrop-saturate-150"
->
-  <div class="container-page flex h-16 items-center justify-between">
-    <a
-      href="/"
-      class="group inline-flex min-h-[44px] items-center gap-2.5 px-1 font-semibold tracking-tight"
-      aria-label="Kârly — home"
-    >
-      <span
-        class="grid h-7 w-7 place-items-center rounded-md bg-accent text-accent-foreground font-mono text-sm font-bold transition-transform group-hover:rotate-3"
-        aria-hidden="true"
-      >
-        ₺
-      </span>
-      <span class="text-fg">Kârly</span>
+<nav class="nav" data-screen-label="Site nav">
+  <div class="nav-inner">
+    <a class="brand" href="/" aria-label="Kârly — home">
+      <span class="brand-mark" aria-hidden="true">K</span>
+      <span>Kârly</span>
     </a>
-
-    <nav aria-label="Primary" class="hidden items-center gap-1 md:flex">
-      {
-        links.map((link) => (
-          <a
-            href={link.href}
-            class:list={[
-              "inline-flex min-h-[44px] items-center rounded-md px-3 text-sm transition-colors",
-              isActive(link.href)
-                ? "text-fg bg-bg-elev"
-                : "text-fg-muted hover:text-fg hover:bg-bg-elev/60",
-            ]}
-            aria-current={isActive(link.href) ? "page" : undefined}
-          >
-            {link.label}
-          </a>
-        ))
-      }
-    </nav>
-
-    <div class="flex items-center gap-2">
-      <span
-        class="hidden items-center gap-1.5 rounded-md border border-border bg-bg-elev/60 px-3 py-1.5 text-xs font-mono text-fg-muted backdrop-blur sm:inline-flex"
-      >
-        <span class="relative flex h-1.5 w-1.5">
-          <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent opacity-75"></span>
-          <span class="relative inline-flex h-1.5 w-1.5 rounded-full bg-accent"></span>
-        </span>
-        Google Play soon
-      </span>
-      <button
-        type="button"
-        id="nav-toggle"
-        class="grid h-11 w-11 place-items-center rounded-md text-fg-muted hover:text-fg hover:bg-bg-elev md:hidden"
-        aria-label="Open menu"
-        aria-expanded="false"
-        aria-controls="nav-mobile"
-      >
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+    <div class="nav-links">
+      {links.map((l) => <a href={l.href}>{l.label}</a>)}
+      <a href={`${prefix}#download`} class="nav-cta">
+        Get the app
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
           <path
-            d="M4 7h16M4 12h16M4 17h16"
+            d="M3 6h6m0 0L6 3m3 3L6 9"
             stroke="currentColor"
-            stroke-width="2"
+            stroke-width="1.5"
             stroke-linecap="round"
           ></path>
         </svg>
-      </button>
+      </a>
     </div>
   </div>
-
-  <div
-    id="nav-mobile"
-    hidden
-    class="border-t border-border/60 md:hidden"
-  >
-    <nav aria-label="Mobile" class="container-page flex flex-col py-2">
-      {
-        links.map((link) => (
-          <a
-            href={link.href}
-            class:list={[
-              "inline-flex min-h-[44px] items-center rounded-md px-3 text-sm transition-colors",
-              isActive(link.href) ? "text-fg bg-bg-elev" : "text-fg-muted hover:text-fg",
-            ]}
-          >
-            {link.label}
-          </a>
-        ))
-      }
-    </nav>
-  </div>
-</header>
-
-<script>
-  const btn = document.getElementById("nav-toggle");
-  const menu = document.getElementById("nav-mobile");
-  if (btn && menu) {
-    btn.addEventListener("click", () => {
-      const open = menu.hasAttribute("hidden");
-      if (open) {
-        menu.removeAttribute("hidden");
-        btn.setAttribute("aria-expanded", "true");
-        btn.setAttribute("aria-label", "Close menu");
-        const firstLink = menu.querySelector("a");
-        if (firstLink instanceof HTMLElement) firstLink.focus();
-      } else {
-        menu.setAttribute("hidden", "");
-        btn.setAttribute("aria-expanded", "false");
-        btn.setAttribute("aria-label", "Open menu");
-        btn.focus();
-      }
-    });
-  }
-</script>
+</nav>

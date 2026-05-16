@@ -7,54 +7,47 @@ interface Section {
 }
 
 interface Props {
+  eyebrow: string;
   title: string;
+  lede: string;
   description?: string;
   lastUpdated: string;
-  effectiveDate?: string;
+  meta?: string[]; // extra meta lines beside "Last updated"
   sections: Section[];
 }
 
-const { title, description, lastUpdated, effectiveDate, sections } = Astro.props;
+const {
+  eyebrow,
+  title,
+  lede,
+  description,
+  lastUpdated,
+  meta = [],
+  sections,
+} = Astro.props;
 ---
 
 <BaseLayout title={title} description={description}>
-  <section class="container-page pt-16 pb-12 md:pt-24 md:pb-16">
-    <div class="grid gap-12 lg:grid-cols-[1fr_240px]">
-      <article class="max-w-2xl">
-        <p class="font-mono text-xs uppercase tracking-widest text-fg-muted">Legal</p>
-        <h1 class="mt-3 text-4xl font-semibold tracking-tight md:text-5xl">
-          {title}
-        </h1>
+  <article class="page legal" data-screen-label={`${title} — Content`}>
+    <header class="legal-head">
+      <span class="eyebrow">{eyebrow}</span>
+      <h1>{title}</h1>
+      <p class="lede">{lede}</p>
+      <div class="meta">
+        <span>Last updated · {lastUpdated}</span>
+        {meta.map((m) => <span>{m}</span>)}
+      </div>
+    </header>
 
-        <div class="mt-5 flex flex-wrap items-center gap-x-5 gap-y-1 text-xs font-mono text-fg-muted">
-          <span>Last updated: {lastUpdated}</span>
-          {effectiveDate && <span>Effective: {effectiveDate}</span>}
-        </div>
-
-        <div class="prose-legal mt-10">
-          <slot />
-        </div>
-      </article>
-
-      <aside class="hidden lg:block">
-        <div class="sticky top-24">
-          <p class="font-mono text-xs uppercase tracking-widest text-fg-muted">
-            On this page
-          </p>
-          <nav aria-label="Section navigation" class="mt-4 flex flex-col gap-1.5 border-l border-border pl-4">
-            {
-              sections.map((s) => (
-                <a
-                  href={`#${s.id}`}
-                  class="text-sm text-fg-muted transition-colors hover:text-fg"
-                >
-                  {s.title}
-                </a>
-              ))
-            }
-          </nav>
-        </div>
+    <div class="legal-body">
+      <aside class="toc" aria-label="Sections">
+        <strong>On this page</strong>
+        {sections.map((s) => <a href={`#${s.id}`}>{s.title}</a>)}
       </aside>
+
+      <div class="legal-content">
+        <slot />
+      </div>
     </div>
-  </section>
+  </article>
 </BaseLayout>

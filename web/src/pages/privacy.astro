@@ -1,261 +1,185 @@
 ---
 import LegalLayout from "../layouts/LegalLayout.astro";
 
-const lastUpdated = "May 15, 2026";
-const effectiveDate = "May 15, 2026";
-
 const sections = [
-  { id: "scope", title: "1. Scope" },
-  { id: "controller", title: "2. Data controller" },
-  { id: "data-we-collect", title: "3. Data we collect" },
-  { id: "purposes", title: "4. How we use data" },
-  { id: "third-parties", title: "5. Third-party services" },
-  { id: "ads", title: "6. Advertising & ATT" },
-  { id: "subscriptions", title: "7. Subscriptions" },
-  { id: "retention", title: "8. Retention" },
-  { id: "transfers", title: "9. International transfers" },
-  { id: "rights", title: "10. Your rights" },
-  { id: "children", title: "11. Children" },
-  { id: "changes", title: "12. Changes" },
-  { id: "contact", title: "13. Contact" },
+  { id: "tldr", title: "TL;DR" },
+  { id: "what-we-collect", title: "What we collect" },
+  { id: "what-we-dont", title: "What we don't collect" },
+  { id: "where-data-lives", title: "Where data lives" },
+  { id: "billing", title: "Billing & subscriptions" },
+  { id: "permissions", title: "App permissions" },
+  { id: "kids", title: "Kids" },
+  { id: "changes", title: "Changes" },
+  { id: "contact", title: "Contact" },
 ];
 ---
 
 <LegalLayout
-  title="Privacy Policy"
-  description="How Kârly collects, uses, and protects your data."
-  lastUpdated={lastUpdated}
-  effectiveDate={effectiveDate}
+  eyebrow="Privacy policy"
+  title="What we do with your data."
+  lede="Short version: almost nothing. We don't run ads, we don't have a server, and your calculations live on your phone, not ours."
+  description="Kârly's privacy policy: no ads, no tracking, no third-party SDKs, no server. Your calculations live on your device."
+  lastUpdated="May 13, 2026"
+  meta={["v0.2", "Plain English, no lawyer-speak"]}
   sections={sections}
 >
-  <p>
-    This Privacy Policy explains how <strong>Kârly</strong>, a mobile app
-    published by <strong>NexUtility</strong> (referred to as
-    <strong>"NexUtility"</strong>, <strong>"we"</strong>, <strong>"us"</strong>,
-    or <strong>"our"</strong>), collects, uses, and protects information when
-    you use the Kârly app or this website.
-  </p>
+  <section id="tldr">
+    <h2>TL;DR</h2>
+    <div class="callout">
+      Kârly is a calculator that runs entirely on your phone. We have no
+      server that stores your data. We don&rsquo;t run ads. We don&rsquo;t
+      load third-party trackers or analytics SDKs. Your calculations and
+      saved history are kept in your phone&rsquo;s local preferences — if you
+      uninstall the app, that data is gone.
+    </div>
+    <p>
+      If you want the long version, read on. We&rsquo;ve tried to write it
+      like a person, not a legal department.
+    </p>
+  </section>
 
-  <p>
-    We have written this policy in plain language and have included specific
-    sections required by Apple App Tracking Transparency, Google Data Safety,
-    the EU General Data Protection Regulation (GDPR), and the KVKK.
-  </p>
+  <section id="what-we-collect">
+    <h2>What we collect</h2>
+    <p>
+      Nothing about you. We don&rsquo;t ask for your name, email, phone
+      number, or location. There is no Kârly account to create.
+    </p>
+    <p>
+      The only data the app ever handles is the data you type in yourself —
+      item names, costs, sell prices, commission and VAT overrides, shipping
+      and operational costs. That data is used for one purpose: to calculate
+      the number on your screen.
+    </p>
+  </section>
 
-  <h2 id="scope">1. Scope</h2>
-  <p>
-    This policy covers the Kârly mobile app on Google Play (and, when
-    available, on the Apple App Store) and the website at
-    <code>karly.nexutility.dev</code>. It supplements the
-    <a href="https://nexutility.dev/privacy" rel="noopener" target="_blank">NexUtility umbrella privacy policy</a>;
-    where the two disagree, this policy controls for the Kârly app.
-  </p>
+  <section id="what-we-dont">
+    <h2>What we don&rsquo;t collect</h2>
+    <p>To be specific:</p>
+    <ul>
+      <li>
+        We do not use AdMob, Meta Audience Network, or any advertising SDK.
+      </li>
+      <li>
+        We do not use Google Analytics, Firebase Analytics, Amplitude,
+        Mixpanel, or any analytics SDK.
+      </li>
+      <li>
+        We do not use Crashlytics or any crash reporting SDK that transmits
+        data off your device.
+      </li>
+      <li>
+        We do not have a Kârly backend server. There is nothing for us to
+        log.
+      </li>
+      <li>
+        We do not request location, contacts, photos, microphone, or camera
+        permissions.
+      </li>
+      <li>
+        We do not sell, rent, or share data with third parties because we
+        don&rsquo;t have data to sell.
+      </li>
+    </ul>
+  </section>
 
-  <h2 id="controller">2. Data controller</h2>
-  <p>
-    The data controller is NexUtility,
-    <code>[Legal entity name]</code>, <code>[Registered address]</code>.
-    Inquiries can be sent to
-    <a href="mailto:privacy@nexutility.dev">privacy@nexutility.dev</a>.
-  </p>
+  <section id="where-data-lives">
+    <h2>Where your data lives</h2>
+    <p>
+      Saved calculations (your History), your daily usage counter, and your
+      language preference are stored locally on your device using the
+      platform&rsquo;s standard preferences store (SharedPreferences on
+      Android). That storage is encrypted at rest by your phone&rsquo;s
+      operating system.
+    </p>
+    <p>
+      If you uninstall the app, this data is removed by the operating system.
+      We do not back it up to our servers — because, as mentioned, we
+      don&rsquo;t have any.
+    </p>
+    <p>
+      PDF reports you generate are placed in your device&rsquo;s share sheet
+      for you to send wherever you like. We don&rsquo;t see them.
+    </p>
+  </section>
 
-  <h2 id="data-we-collect">3. Data we collect</h2>
-  <p>
-    Kârly is a calculator. The numbers you type (cost, sell price, currency,
-    chosen marketplace, calculator results) are stored only on your device
-    in the app's local storage. They are never sent to a NexUtility server.
-    Uninstalling the app erases them.
-  </p>
+  <section id="billing">
+    <h2>Billing &amp; subscriptions</h2>
+    <p>
+      If you subscribe to Kârly Pro, the actual billing is handled by your
+      platform&rsquo;s app store — Google Play Billing on Android, App Store
+      on iOS (when iOS launches). We use RevenueCat to validate subscription
+      status on the device.
+    </p>
+    <p>
+      We do not see your card number, billing address, or any payment
+      details. The app store handles all of that. We only receive a
+      &ldquo;yes/no&rdquo; entitlement: is this device&rsquo;s user a Pro
+      subscriber?
+    </p>
+    <p>
+      Google Play&rsquo;s, Apple&rsquo;s, and RevenueCat&rsquo;s own privacy
+      policies apply to the data they collect to operate billing:
+    </p>
+    <ul>
+      <li>
+        <a class="inline" href="https://policies.google.com/privacy" rel="noopener">
+          Google Privacy Policy
+        </a>
+      </li>
+      <li>
+        <a class="inline" href="https://www.apple.com/legal/privacy/" rel="noopener">
+          Apple Privacy Policy
+        </a>
+      </li>
+      <li>
+        <a class="inline" href="https://www.revenuecat.com/privacy" rel="noopener">
+          RevenueCat Privacy Policy
+        </a>
+      </li>
+    </ul>
+  </section>
 
-  <h3>3.1 Provided directly</h3>
-  <ul>
-    <li>
-      <strong>Calculator inputs</strong> — cost, sell price, marketplace
-      selection, FX rate, optional operational costs. Stored on-device only.
-    </li>
-    <li>
-      <strong>Contact data</strong> — only if you write to
-      <a href="mailto:support@nexutility.dev">support@nexutility.dev</a>: your
-      email address and the contents of your message.
-    </li>
-  </ul>
+  <section id="permissions">
+    <h2>App permissions</h2>
+    <p>
+      Kârly requests no runtime permissions on first launch. The only
+      OS-level capability the app uses is the system share sheet — which is
+      what hands a generated PDF off to whichever email or messaging app you
+      choose to use.
+    </p>
+  </section>
 
-  <h3>3.2 Collected automatically</h3>
-  <ul>
-    <li>
-      <strong>Device & technical data</strong> — operating system version,
-      device model, app version, language, anonymized crash diagnostics.
-    </li>
-    <li>
-      <strong>Anonymized usage events</strong> — feature opens, paywall views,
-      and similar product events. Stored pseudonymously against an
-      app-instance identifier and never linked to your calculator inputs or
-      a real identity.
-    </li>
-    <li>
-      <strong>Advertising identifiers</strong> — on Android, the Advertising
-      ID is used by Google AdMob to deliver ads. You can reset or opt out at
-      any time in your device's system settings. On iOS, the IDFA is only
-      accessed if you grant permission under App Tracking Transparency.
-    </li>
-  </ul>
+  <section id="kids">
+    <h2>Kids</h2>
+    <p>
+      Kârly is a business tool for adults running a small selling operation.
+      We don&rsquo;t market it to children under 13, and we don&rsquo;t
+      knowingly collect data from anyone — including children — because we
+      don&rsquo;t collect data, full stop.
+    </p>
+  </section>
 
-  <h2 id="purposes">4. How we use data</h2>
-  <ul>
-    <li>To run the calculator on your device.</li>
-    <li>To verify subscription entitlement when you subscribe.</li>
-    <li>To detect and fix crashes and bugs.</li>
-    <li>To measure aggregate product usage and prioritize features.</li>
-    <li>To serve ads in the free tier of the app.</li>
-    <li>To comply with our legal obligations.</li>
-  </ul>
+  <section id="changes">
+    <h2>Changes to this policy</h2>
+    <p>
+      If we ever change anything material — for example, if we add a backend
+      (we have no plans to) or introduce any third-party SDK — we will
+      update this page, bump the &ldquo;Last updated&rdquo; date at the top,
+      and post a clear notice in the app on the next launch. We won&rsquo;t
+      sneak it in.
+    </p>
+  </section>
 
-  <h2 id="third-parties">5. Third-party services</h2>
-  <p>
-    Kârly relies on a small number of third-party processors. Each one has
-    its own privacy policy, linked below.
-  </p>
-
-  <h3>5.1 Hosting & delivery</h3>
-  <ul>
-    <li>
-      <strong>Cloudflare</strong> — hosts this website and provides CDN /
-      DDoS protection.
-      <a href="https://www.cloudflare.com/privacypolicy/" rel="noopener" target="_blank">Policy</a>.
-    </li>
-  </ul>
-
-  <h3>5.2 Subscription management</h3>
-  <ul>
-    <li>
-      <strong>RevenueCat</strong> — verifies Google Play (and App Store, when
-      available) receipts and manages subscription entitlements. RevenueCat
-      receives the store's anonymous identifier and a pseudonymous
-      app-instance ID assigned by Kârly. It does not receive your calculator
-      inputs.
-      <a href="https://www.revenuecat.com/privacy" rel="noopener" target="_blank">Policy</a>.
-    </li>
-  </ul>
-
-  <h3>5.3 Advertising</h3>
-  <ul>
-    <li>
-      <strong>Google AdMob</strong> — serves ads in the free tier of Kârly.
-      AdMob may use the Advertising ID (Android) / IDFA (iOS, with your
-      permission), coarse location, and ad-interaction signals as described
-      in the
-      <a href="https://support.google.com/admob/answer/6128543" rel="noopener" target="_blank">AdMob Help Center</a>
-      and Google's
-      <a href="https://policies.google.com/privacy" rel="noopener" target="_blank">Privacy Policy</a>.
-      Personalized ads are only shown after we obtain consent where required
-      by Apple's App Tracking Transparency or the IAB EU Transparency &
-      Consent Framework.
-    </li>
-  </ul>
-
-  <h3>5.4 App stores</h3>
-  <ul>
-    <li>
-      <strong>Google</strong> processes purchases under
-      <a href="https://policies.google.com/privacy" rel="noopener" target="_blank">Google's Privacy Policy</a>.
-    </li>
-    <li>
-      <strong>Apple</strong> (when iOS launches) will process purchases under
-      <a href="https://www.apple.com/legal/privacy/" rel="noopener" target="_blank">Apple's Privacy Policy</a>.
-    </li>
-  </ul>
-
-  <h2 id="ads">6. Advertising & App Tracking Transparency</h2>
-  <p>
-    On Android, you can reset your Advertising ID or opt out of personalized
-    ads at any time in system settings ("Privacy" → "Ads"). On iOS (when
-    Kârly launches there), Kârly will request permission under App Tracking
-    Transparency before any tracking that links your device to data collected
-    by other companies. If you decline, you will still see ads — they will
-    be non-personalized.
-  </p>
-
-  <h2 id="subscriptions">7. Subscriptions, restore & refunds</h2>
-  <p>
-    Kârly offers an optional subscription that removes ads and unlocks
-    advanced features. Subscriptions are billed through Google Play (and,
-    when iOS launches, Apple) at the price and period shown at purchase.
-    Subscriptions auto-renew until cancelled at least 24 hours before the
-    end of the current period.
-  </p>
-  <p>
-    Refunds are handled by Google or Apple per their policies. We can help
-    you find the right form on
-    <a href="/support">/support</a>.
-  </p>
-
-  <h2 id="retention">8. Retention</h2>
-  <p>
-    Calculator inputs stored on your device are retained until you clear app
-    data or uninstall the app. Anonymized usage events and crash diagnostics
-    are retained for up to 12 months. Subscription receipts are retained for
-    as long as your subscription is active and for an additional period
-    required by tax and accounting law, typically up to 10 years. Support
-    tickets are kept for up to 24 months after the last reply.
-  </p>
-
-  <h2 id="transfers">9. International transfers</h2>
-  <p>
-    Some of our processors are located outside Türkiye and the European
-    Union (for example in the United States). When personal data is
-    transferred outside your country of residence, we rely on Standard
-    Contractual Clauses or equivalent safeguards approved by the relevant
-    data protection authority.
-  </p>
-
-  <h2 id="rights">10. Your rights</h2>
-  <p>
-    Depending on where you live, you have rights under GDPR, KVKK, and
-    similar laws. These typically include:
-  </p>
-  <ul>
-    <li>The right to access a copy of your personal data.</li>
-    <li>The right to rectify inaccurate data.</li>
-    <li>The right to erasure ("right to be forgotten").</li>
-    <li>The right to restrict or object to processing.</li>
-    <li>The right to data portability.</li>
-    <li>The right to withdraw consent at any time.</li>
-    <li>The right to lodge a complaint with a supervisory authority.</li>
-  </ul>
-  <p>
-    To exercise any of these rights, email
-    <a href="mailto:privacy@nexutility.dev">privacy@nexutility.dev</a>. We
-    will respond within 30 days.
-  </p>
-
-  <h2 id="children">11. Children</h2>
-  <p>
-    Kârly is a business utility and is not directed to children under 13.
-    We do not knowingly collect personal data from children. If you believe
-    a child has provided us with personal data, please contact us and we
-    will delete it.
-  </p>
-
-  <h2 id="changes">12. Changes to this policy</h2>
-  <p>
-    We may update this Privacy Policy from time to time. When we do, we
-    will revise the "Last updated" date at the top. Material changes will
-    be announced inside the app or on this page.
-  </p>
-
-  <h2 id="contact">13. Contact</h2>
-  <p>
-    Privacy questions:
-    <a href="mailto:privacy@nexutility.dev">privacy@nexutility.dev</a>
-    <br />
-    General support:
-    <a href="mailto:support@nexutility.dev">support@nexutility.dev</a>
-  </p>
-
-  <p class="!mt-12 rounded-md border border-warning/30 bg-warning/5 p-4 text-sm text-fg-muted">
-    <strong>Note for the team:</strong> Replace bracketed values (legal
-    entity name, registered address) before submitting the app to Google
-    Play and have this policy reviewed by counsel for the jurisdictions you
-    ship to.
-  </p>
+  <section id="contact">
+    <h2>Contact</h2>
+    <p>
+      If you have a question about this policy or want to know exactly what
+      data your device is storing, write to
+      <a class="inline" href="mailto:hi@nexutility.com">hi@nexutility.com</a>.
+      A real person will answer.
+    </p>
+    <p style="margin-top:24px; font-size: 14px; color: var(--subtle)">
+      Kârly is a product of NexUtility. Mailing address available on request.
+    </p>
+  </section>
 </LegalLayout>

@@ -8,23 +8,23 @@ const faqs = [
   },
   {
     q: "Which marketplaces are supported?",
-    a: "Trendyol, Hepsiburada, N11, Amazon, Etsy, eBay, and Shopify at launch. We add new marketplaces based on user requests — write to us with the marketplace name and your country.",
+    a: "Trendyol, Hepsiburada, n11, Çiçek Sepeti, Pazarama, Amazon US, Etsy, eBay, Shopify, plus a Custom marketplace where you set your own rates. We add new marketplaces based on user requests — write to us with the marketplace name and your country.",
   },
   {
     q: "How accurate are the fee models?",
-    a: "We model each marketplace's public commission, listing, and payment processing fees as published by the marketplace itself. Promotional and category-specific overrides are not modelled — if you're in a special program, treat the calculator output as a high-confidence estimate, not a settlement statement.",
+    a: "We model each marketplace's published default commission, listing, and payment processing fees. Promotional and category-specific overrides are not modelled — if you're in a special program, treat the calculator output as a high-confidence estimate, not a settlement statement.",
   },
   {
     q: "How do I cancel a subscription?",
-    a: "Subscriptions (if you have one) are managed by Google Play. Open the Play Store app → tap your profile picture → Payments & subscriptions → Subscriptions → Kârly → Cancel. Cancellation takes effect at the end of the current billing period.",
+    a: "Subscriptions are managed by Google Play. Open the Play Store app → tap your profile picture → Payments &amp; subscriptions → Subscriptions → Kârly → Cancel. Cancellation takes effect at the end of the current billing period.",
   },
   {
     q: "Where can I report a bug or request a feature?",
-    a: "Email support@nexutility.dev with the app version (Settings → About), your device model, and a description of what happened. Screenshots help. We reply within one business day.",
+    a: 'Email <a class="inline" href="mailto:hi@nexutility.com">hi@nexutility.com</a> with the app version (Settings → About), your device model, and a description of what happened. Screenshots help. We reply within one business day.',
   },
   {
     q: "What about iOS?",
-    a: "Android-first launch. iOS is on the roadmap. If you'd like to be notified when it lands, write to hello@nexutility.dev.",
+    a: "Android-first launch. iOS is on the roadmap — it lands after Android revenue covers the Apple Developer Program fee. Write to us if you'd like to be notified.",
   },
 ];
 ---
@@ -33,108 +33,68 @@ const faqs = [
   title="Support"
   description="Help and contact options for Kârly. Cancel subscriptions, report bugs, request new marketplaces."
 >
-  <section class="container-page pt-16 pb-10 md:pt-24 md:pb-12">
-    <div class="max-w-2xl">
-      <p class="font-mono text-xs uppercase tracking-widest text-fg-muted">Support</p>
-      <h1 class="mt-3 text-4xl font-semibold tracking-tight md:text-5xl">
-        Real humans, fast replies.
-      </h1>
-      <p class="mt-5 text-fg-muted md:text-lg">
+  <article class="page legal" data-screen-label="Support">
+    <header class="legal-head">
+      <span class="eyebrow">Support</span>
+      <h1>Real humans,<br />fast replies.</h1>
+      <p class="lede">
         Write to us directly, or check the answers to the questions we get
         most often.
       </p>
-    </div>
-  </section>
+    </header>
 
-  <section class="container-page pb-16">
-    <div class="grid gap-4 sm:grid-cols-2">
-      <a
-        href="mailto:support@nexutility.dev"
-        class="group rounded-xl border border-border bg-bg-elev/40 p-6 transition-all hover:border-border-strong hover:bg-bg-elev"
-      >
-        <div
-          class="grid h-10 w-10 place-items-center rounded-md bg-accent/10 text-accent"
-          aria-hidden="true"
-        >
+    <div class="support-cards">
+      <a class="support-card" href="mailto:hi@nexutility.com">
+        <div class="icon" aria-hidden="true">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
             <path
               d="M3 8.5V17a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V8.5M3 8.5l8.4 5.6a1 1 0 0 0 1.2 0L21 8.5M3 8.5V7a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v1.5"
               stroke="currentColor"
               stroke-width="1.7"
               stroke-linecap="round"
-              stroke-linejoin="round"></path>
+              stroke-linejoin="round"
+            ></path>
           </svg>
         </div>
-        <h2 class="mt-5 text-base font-semibold text-fg">General support</h2>
-        <p class="mt-1.5 text-sm text-fg-muted">
+        <h3>General support</h3>
+        <p>
           Bugs, billing, account questions, feature requests. We reply within
           1 business day.
         </p>
-        <p class="mt-4 font-mono text-sm text-fg group-hover:text-accent">
-          support@nexutility.dev
-        </p>
+        <p class="addr num">hi@nexutility.com</p>
       </a>
 
-      <a
-        href="mailto:privacy@nexutility.dev"
-        class="group rounded-xl border border-border bg-bg-elev/40 p-6 transition-all hover:border-border-strong hover:bg-bg-elev"
-      >
-        <div
-          class="grid h-10 w-10 place-items-center rounded-md bg-accent/10 text-accent"
-          aria-hidden="true"
-        >
+      <a class="support-card" href="mailto:privacy@nexutility.com">
+        <div class="icon" aria-hidden="true">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
             <path
               d="M12 3 4 6.5v5c0 4.5 3.2 8.7 8 10 4.8-1.3 8-5.5 8-10v-5L12 3Z"
               stroke="currentColor"
               stroke-width="1.7"
               stroke-linecap="round"
-              stroke-linejoin="round"></path>
+              stroke-linejoin="round"
+            ></path>
           </svg>
         </div>
-        <h2 class="mt-5 text-base font-semibold text-fg">Privacy & data</h2>
-        <p class="mt-1.5 text-sm text-fg-muted">
-          GDPR / KVKK requests, data export, or anything else privacy-related.
+        <h3>Privacy &amp; data</h3>
+        <p>
+          GDPR / KVKK requests, data export, or anything else
+          privacy-related.
         </p>
-        <p class="mt-4 font-mono text-sm text-fg group-hover:text-accent">
-          privacy@nexutility.dev
-        </p>
+        <p class="addr num">privacy@nexutility.com</p>
       </a>
     </div>
-  </section>
 
-  <section class="container-page pb-24">
-    <div class="mx-auto max-w-3xl">
-      <h2 class="text-2xl font-semibold tracking-tight md:text-3xl">
-        Frequently asked
-      </h2>
-      <div class="mt-8 divide-y divide-border rounded-xl border border-border bg-bg-elev/40">
-        {
-          faqs.map((faq) => (
-            <details class="group">
-              <summary class="flex cursor-pointer list-none items-start justify-between gap-4 p-6 transition-colors hover:bg-bg-elev">
-                <span class="text-base font-medium text-fg">{faq.q}</span>
-                <span
-                  class="mt-0.5 grid h-6 w-6 shrink-0 place-items-center rounded-md border border-border text-fg-muted transition-transform group-open:rotate-45"
-                  aria-hidden="true"
-                >
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none">
-                    <path
-                      d="M12 5v14M5 12h14"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                    />
-                  </svg>
-                </span>
-              </summary>
-              <div class="px-6 pb-6 text-sm leading-relaxed text-fg-muted">
-                {faq.a}
-              </div>
-            </details>
-          ))
-        }
-      </div>
+    <h2 style="margin-top: 64px">Frequently asked</h2>
+    <div class="faq-grid" style="margin-top: 24px">
+      {
+        faqs.map((f) => (
+          <details class="faq-item">
+            <summary>{f.q}</summary>
+            <div class="answer" set:html={f.a} />
+          </details>
+        ))
+      }
     </div>
-  </section>
+  </article>
 </BaseLayout>

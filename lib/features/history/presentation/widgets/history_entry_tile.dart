@@ -3,11 +3,15 @@ import 'package:intl/intl.dart';
 
 import '../../../../core/format.dart';
 import '../../../../l10n/generated/app_localizations.dart';
+import '../../../../theme/calm_widgets.dart';
 import '../../../../theme/colors.dart';
 import '../../../calculator/data/category.dart';
 import '../../../calculator/data/marketplaces.dart';
+import '../../../calculator/presentation/marketplace_emoji.dart';
 import '../../data/saved_calculation.dart';
 
+/// Calm history row — flag tile · name + subline · net + margin.
+/// Matches the prototype's `HistoryRow` layout, condensed for Flutter.
 class HistoryEntryTile extends StatelessWidget {
   const HistoryEntryTile({
     super.key,
@@ -21,7 +25,7 @@ class HistoryEntryTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final theme = Theme.of(context);
+    final p = CalmPalette.of(context);
     final locale = Localizations.localeOf(context);
 
     final marketplace = defaultMarketplaces.firstWhere(
@@ -29,12 +33,16 @@ class HistoryEntryTile extends StatelessWidget {
       orElse: () => defaultMarketplaces.last,
     );
     final category = Category.byId(entry.categoryId);
-    final dateStr = DateFormat.yMMMd(locale.toString()).add_Hm().format(
-      entry.savedAt,
-    );
+    final dateStr =
+        DateFormat.MMMd(locale.toString()).format(entry.savedAt);
 
-    final isLoss = entry.result.isLoss;
-    final accent = isLoss ? BrandColors.danger : theme.colorScheme.primary;
+    final net = entry.result.netProfit;
+    final color = entry.result.isLoss ? p.neg : p.pos;
+    final subline = [
+      marketplace.name,
+      if (category != null) category.displayName(l10n),
+      dateStr,
+    ].join(' · ');
 
     return Dismissible(
       key: ValueKey(entry.id),
@@ -44,68 +52,77 @@ class HistoryEntryTile extends StatelessWidget {
       background: Container(
         alignment: Alignment.centerRight,
         padding: const EdgeInsets.symmetric(horizontal: 24),
-        color: BrandColors.danger.withValues(alpha: 0.15),
-        child: const Icon(Icons.delete_rounded, color: BrandColors.danger),
+        color: p.neg.withValues(alpha: 0.15),
+        child: Icon(Icons.delete_rounded, color: p.neg),
       ),
       child: Container(
         decoration: BoxDecoration(
-          color: theme.colorScheme.surfaceContainerLow,
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: theme.colorScheme.outline),
+          border: Border(bottom: BorderSide(color: p.border)),
         ),
-        padding: const EdgeInsets.fromLTRB(16, 14, 16, 14),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        padding: const EdgeInsets.fromLTRB(4, 14, 4, 14),
+        child: Row(
           children: [
-            Row(
-              children: [
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        entry.itemName ?? marketplace.name,
-                        style: theme.textTheme.titleMedium?.copyWith(
-                          fontWeight: FontWeight.w600,
-                        ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      const SizedBox(height: 2),
-                      Text(
-                        dateStr,
-                        style: theme.textTheme.bodySmall?.copyWith(
-                          color: theme.colorScheme.onSurface
-                              .withValues(alpha: 0.55),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Text(
-                  formatCurrency(
-                    entry.result.netProfit,
-                    currency: entry.inputs.currency,
-                  ),
-                  style: theme.textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.w700,
-                    color: accent,
-                    fontFeatures: const [FontFeature.tabularFigures()],
-                  ),
-                ),
-              ],
+            Container(
+              width: 38,
+              height: 38,
+              decoration: BoxDecoration(
+                color: p.panel,
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: p.border),
+              ),
+              alignment: Alignment.center,
+              child: Text(
+                emojiFor(marketplace),
+                style: const TextStyle(fontSize: 18, height: 1),
+              ),
             ),
-            const SizedBox(height: 10),
-            Wrap(
-              spacing: 6,
-              runSpacing: 4,
+            const SizedBox(width: 14),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    entry.itemName ?? category?.displayName(l10n) ?? marketplace.name,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      color: p.fg,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                      letterSpacing: -0.07,
+                    ),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    subline,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      color: p.subtle,
+                      fontSize: 12,
+                      letterSpacing: -0.06,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(width: 12),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              mainAxisSize: MainAxisSize.min,
               children: [
-                _chip(theme, marketplace.name),
-                if (category != null)
-                  _chip(theme, category.displayName(l10n)),
-                _chip(
-                  theme,
-                  '${l10n.resultMargin} ${formatPercent(entry.result.marginPct)}',
+                CalmNum(
+                  _signed(net, entry.inputs.currency),
+                  color: color,
+                  size: 14,
+                ),
+                const SizedBox(height: 2),
+                CalmNum(
+                  '${entry.result.marginPct >= 0 ? '+' : ''}${entry.result.marginPct.toStringAsFixed(1)}%',
+                  color: p.subtle,
+                  size: 12,
+                  weight: FontWeight.w400,
                 ),
               ],
             ),
@@ -115,48 +132,77 @@ class HistoryEntryTile extends StatelessWidget {
     );
   }
 
+  String _signed(double v, String ccy) {
+    final base = formatCurrency(v.abs(), currency: ccy);
+    return v >= 0 ? '+$base' : '−$base';
+  }
+
   Future<bool> _confirmDelete(
     BuildContext context,
     AppLocalizations l10n,
   ) async {
     final ok = await showDialog<bool>(
       context: context,
-      builder: (ctx) => AlertDialog(
-        title: Text(l10n.historyDeleteConfirmTitle),
-        content: Text(l10n.historyDeleteConfirmBody),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(ctx).pop(false),
-            child: Text(l10n.actionCancel),
+      barrierColor: CalmPalette.of(context).sheetScrim,
+      builder: (ctx) {
+        final p = CalmPalette.of(ctx);
+        return Dialog(
+          backgroundColor: p.bg,
+          shape: RoundedRectangleBorder(
+            side: BorderSide(color: p.border),
+            borderRadius: BorderRadius.circular(20),
           ),
-          FilledButton(
-            onPressed: () => Navigator.of(ctx).pop(true),
-            style: FilledButton.styleFrom(
-              backgroundColor: BrandColors.danger,
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(20, 22, 20, 16),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Text(
+                  l10n.historyDeleteConfirmTitle,
+                  style: TextStyle(
+                    color: p.fg,
+                    fontSize: 18,
+                    fontWeight: FontWeight.w500,
+                    letterSpacing: -0.36,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  l10n.historyDeleteConfirmBody,
+                  style: TextStyle(
+                    color: p.muted,
+                    fontSize: 14,
+                    height: 1.5,
+                    letterSpacing: -0.07,
+                  ),
+                ),
+                const SizedBox(height: 18),
+                Row(
+                  children: [
+                    Expanded(
+                      child: CalmButton(
+                        label: l10n.actionCancel,
+                        variant: CalmBtnVariant.ghost,
+                        onPressed: () => Navigator.of(ctx).pop(false),
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: CalmButton(
+                        label: l10n.actionDelete,
+                        variant: CalmBtnVariant.danger,
+                        onPressed: () => Navigator.of(ctx).pop(true),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
             ),
-            child: Text(l10n.actionDelete),
           ),
-        ],
-      ),
+        );
+      },
     );
     return ok ?? false;
-  }
-
-  Widget _chip(ThemeData theme, String label) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2.5),
-      decoration: BoxDecoration(
-        color: theme.colorScheme.surface,
-        borderRadius: BorderRadius.circular(99),
-        border: Border.all(color: theme.colorScheme.outline),
-      ),
-      child: Text(
-        label,
-        style: theme.textTheme.bodySmall?.copyWith(
-          fontSize: 11.5,
-          color: theme.colorScheme.onSurface.withValues(alpha: 0.75),
-        ),
-      ),
-    );
   }
 }

@@ -7,7 +7,9 @@ import 'package:printing/printing.dart';
 import '../../../core/subscription_provider.dart';
 import '../../../core/usage_quota_provider.dart';
 import '../../../l10n/generated/app_localizations.dart';
+import '../../../theme/calm_widgets.dart';
 import '../../../theme/colors.dart';
+import '../../compare/presentation/compare_screen.dart';
 import '../../history/providers.dart';
 import '../../paywall/presentation/pro_gate_dialogs.dart';
 import '../data/category.dart';
@@ -16,11 +18,24 @@ import '../data/marketplaces.dart';
 import '../domain/calculate.dart';
 import '../domain/inputs.dart';
 import '../domain/report_pdf.dart';
-import 'marketplace_notes.dart';
 import 'widgets/category_picker.dart';
 import 'widgets/marketplace_picker.dart';
 import 'widgets/result_card.dart';
 
+/// Calculator screen — the primary surface of the app.
+///
+/// Calm-redesign layout (mirrors `prototype-calm/calculator.jsx` and
+/// `result.jsx` in a single scroll view, since Flutter routes the
+/// calculator and result as one tab):
+///
+///   1. Calm section title ("New entry" / sub)
+///   2. Marketplace chip
+///   3. Item name underline + inline category chip
+///   4. Cost / Sell — two large prefixed Fields side by side
+///   5. Collapsible "Fees & shipping" with commission/VAT and the
+///      two extra-cost rows
+///   6. "See the breakdown" accent CTA + tertiary "Start over"
+///   7. After Calculate: the colored hero result card + Share / Save CTAs
 class CalculatorScreen extends ConsumerStatefulWidget {
   const CalculatorScreen({super.key});
 
@@ -41,6 +56,7 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
 
   CalcResult? _result;
   CalcInputs? _lastInputs;
+  bool _showAdvanced = false;
   bool _sharing = false;
   bool _saving = false;
   bool _saved = false;
@@ -49,8 +65,6 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     if (_marketplace == null) {
-      // First build — pick a marketplace based on the active locale
-      // (Trendyol for Turkish users, Amazon US for everyone else).
       final lang = Localizations.localeOf(context).languageCode;
       final defaultId = defaultMarketplaceIdFor(lang);
       _applyMarketplace(
@@ -71,8 +85,6 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
     super.dispose();
   }
 
-  /// Pre-fills commission and VAT based on the marketplace defaults,
-  /// without overwriting user-entered values they've already typed.
   void _applyMarketplace(Marketplace m) {
     _marketplace = m;
     _commissionCtrl.text = (m.defaultCommissionRate * 100).toStringAsFixed(1);
@@ -129,6 +141,7 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
       if (m != null) _applyMarketplace(m);
       _result = null;
       _lastInputs = null;
+      _showAdvanced = false;
       _saved = false;
     });
   }
@@ -139,7 +152,6 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
     final m = _marketplace;
     if (result == null || inputs == null || m == null || _sharing) return;
 
-    // Gate on daily cap for free users. Pro users skip the check.
     final subscription = ref.read(subscriptionProvider);
     if (!subscription.isPro) {
       final quota = await ref.read(usageQuotaProvider.future);
@@ -220,6 +232,35 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
     }
   }
 
+  Future<void> _onCompare() async {
+    final m = _marketplace;
+    if (m == null) return;
+    // Build inputs from the current form even if Calculate hasn't been
+    // tapped yet — Compare needs the user's cost/sell to do its thing.
+    final inputs = _lastInputs ?? _buildInputs(m);
+    final picked = await Navigator.of(context).push<Marketplace>(
+      MaterialPageRoute(
+        builder: (_) => CompareScreen(
+          inputs: inputs,
+          currentMarketplaceId: m.id,
+        ),
+        fullscreenDialog: false,
+      ),
+    );
+    if (picked == null || !mounted) return;
+    setState(() {
+      _applyMarketplace(picked);
+      // Recompute if we already have a result so the hero number
+      // reflects the new marketplace's defaults.
+      if (_lastInputs != null) {
+        final newInputs = _buildInputs(picked);
+        _result = calculateProfit(newInputs);
+        _lastInputs = newInputs;
+        _saved = false;
+      }
+    });
+  }
+
   Future<void> _onSave() async {
     final result = _result;
     final inputs = _lastInputs;
@@ -259,153 +300,287 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
     return double.tryParse(raw.replaceAll(',', '.')) ?? 0;
   }
 
+  String _currencyPrefix(String ccy) {
+    switch (ccy) {
+      case 'TRY':
+        return '₺';
+      case 'USD':
+        return r'$';
+      case 'EUR':
+        return '€';
+      case 'GBP':
+        return '£';
+      default:
+        return '';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final theme = Theme.of(context);
+    final p = CalmPalette.of(context);
     final marketplace = _marketplace;
     final subscription = ref.watch(subscriptionProvider);
     final quotaAsync = ref.watch(usageQuotaProvider);
 
     return Scaffold(
       appBar: AppBar(
-        title: const _BrandTitle(),
+        title: const CalmBrandTitle(),
         toolbarHeight: 64,
+        backgroundColor: p.bg,
       ),
+      backgroundColor: p.bg,
       body: marketplace == null
           ? const Center(child: CircularProgressIndicator())
           : ListView(
-              padding: const EdgeInsets.fromLTRB(16, 4, 16, 28),
+              padding: const EdgeInsets.fromLTRB(22, 4, 22, 28),
               children: [
-                Text(
-                  l10n.calculatorBrandSubtitle,
-                  style: theme.textTheme.labelMedium?.copyWith(
-                    letterSpacing: 1.2,
-                  ),
+                CalmSectionTitle(
+                  title: l10n.calcHeaderTitle,
+                  subtitle: l10n.calcHeaderSub,
                 ),
-                const SizedBox(height: 14),
+
                 MarketplacePicker(
                   selectedId: marketplace.id,
                   onChanged: _onMarketplaceChanged,
                 ),
-                if (marketplaceNotesFor(marketplace, l10n) != null) ...[
-                  const SizedBox(height: 6),
-                  Text(
-                    marketplaceNotesFor(marketplace, l10n)!,
-                    style: theme.textTheme.bodySmall,
+                const SizedBox(height: 28),
+
+                // Item name underline + inline category chip
+                _ItemNameRow(
+                  controller: _itemNameCtrl,
+                  placeholder: l10n.itemNamePlaceholder,
+                  category: _category,
+                  onCategoryChanged: _onCategoryChanged,
+                ),
+                const SizedBox(height: 28),
+
+                // Cost & Sell side-by-side, large
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      child: CalmField(
+                        controller: _costCtrl,
+                        label: l10n.labelWhatYouPaid,
+                        prefix: _currencyPrefix(marketplace.defaultCurrency),
+                        large: true,
+                        keyboardType:
+                            const TextInputType.numberWithOptions(decimal: true),
+                        inputFormatters: [
+                          FilteringTextInputFormatter.allow(
+                              RegExp(r'[0-9.,]'))
+                        ],
+                        placeholder: '0',
+                      ),
+                    ),
+                    const SizedBox(width: 22),
+                    Expanded(
+                      child: CalmField(
+                        controller: _sellCtrl,
+                        label: l10n.labelSellingFor,
+                        prefix: _currencyPrefix(marketplace.defaultCurrency),
+                        large: true,
+                        keyboardType:
+                            const TextInputType.numberWithOptions(decimal: true),
+                        inputFormatters: [
+                          FilteringTextInputFormatter.allow(
+                              RegExp(r'[0-9.,]'))
+                        ],
+                        placeholder: '0',
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 26),
+
+                // Collapsible advanced section
+                _AdvancedToggle(
+                  expanded: _showAdvanced,
+                  onTap: () =>
+                      setState(() => _showAdvanced = !_showAdvanced),
+                ),
+
+                if (_showAdvanced) ...[
+                  const SizedBox(height: 16),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        child: CalmField(
+                          controller: _commissionCtrl,
+                          label: l10n.labelCommission,
+                          suffix: '%',
+                          keyboardType:
+                              const TextInputType.numberWithOptions(decimal: true),
+                          inputFormatters: [
+                            FilteringTextInputFormatter.allow(
+                                RegExp(r'[0-9.,]'))
+                          ],
+                          hint: _fieldHint(
+                            current: _parse(_commissionCtrl.text),
+                            defaultValue: marketplace.defaultCommissionRate * 100,
+                            l10n: l10n,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 22),
+                      Expanded(
+                        child: CalmField(
+                          controller: _vatCtrl,
+                          label: l10n.labelVat,
+                          suffix: '%',
+                          keyboardType:
+                              const TextInputType.numberWithOptions(decimal: true),
+                          inputFormatters: [
+                            FilteringTextInputFormatter.allow(
+                                RegExp(r'[0-9.,]'))
+                          ],
+                          hint: marketplace.defaultVatRate == 0
+                              ? '—'
+                              : _fieldHint(
+                                  current: _parse(_vatCtrl.text),
+                                  defaultValue: marketplace.defaultVatRate * 100,
+                                  l10n: l10n,
+                                ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 22),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        child: CalmField(
+                          controller: _shippingCtrl,
+                          label: l10n.inputShipping,
+                          prefix: _currencyPrefix(marketplace.defaultCurrency),
+                          keyboardType:
+                              const TextInputType.numberWithOptions(decimal: true),
+                          inputFormatters: [
+                            FilteringTextInputFormatter.allow(
+                                RegExp(r'[0-9.,]'))
+                          ],
+                          placeholder: '0',
+                        ),
+                      ),
+                      const SizedBox(width: 22),
+                      Expanded(
+                        child: CalmField(
+                          controller: _opCostsCtrl,
+                          label: l10n.labelAdsPackaging,
+                          prefix: _currencyPrefix(marketplace.defaultCurrency),
+                          keyboardType:
+                              const TextInputType.numberWithOptions(decimal: true),
+                          inputFormatters: [
+                            FilteringTextInputFormatter.allow(
+                                RegExp(r'[0-9.,]'))
+                          ],
+                          placeholder: '0',
+                        ),
+                      ),
+                    ],
+                  ),
+                  if (marketplace.fixedListingFee > 0) ...[
+                    const SizedBox(height: 18),
+                    Text(
+                      l10n.fixedListingFeeNote(
+                        _currencyPrefix(marketplace.defaultCurrency),
+                        marketplace.fixedListingFee.toStringAsFixed(2),
+                      ),
+                      style: TextStyle(
+                        color: p.subtle,
+                        fontSize: 12,
+                        height: 1.5,
+                        letterSpacing: -0.06,
+                      ),
+                    ),
+                  ],
+                  const SizedBox(height: 4),
+                  Container(
+                    height: 1,
+                    color: p.border,
                   ),
                 ],
-                const SizedBox(height: 14),
-                CategoryPicker(
-                  selected: _category,
-                  onChanged: _onCategoryChanged,
+                const SizedBox(height: 26),
+
+                CalmButton(
+                  label: l10n.actionSeeBreakdown,
+                  variant: CalmBtnVariant.accent,
+                  size: CalmBtnSize.lg,
+                  onPressed: _onCalculate,
                 ),
                 const SizedBox(height: 14),
-                TextField(
-                  controller: _itemNameCtrl,
-                  textInputAction: TextInputAction.next,
-                  textCapitalization: TextCapitalization.sentences,
-                  decoration: InputDecoration(
-                    labelText: l10n.inputItemName,
-                    hintText: l10n.inputItemNameHint,
+                Center(
+                  child: TextButton(
+                    onPressed: _onReset,
+                    child: Text(
+                      l10n.actionStartOver,
+                      style: TextStyle(
+                        color: p.subtle,
+                        fontSize: 13,
+                        letterSpacing: -0.07,
+                      ),
+                    ),
                   ),
                 ),
-                const SizedBox(height: 12),
-                _amountField(
-                  controller: _costCtrl,
-                  label: l10n.inputCost,
-                  hint: l10n.inputCostHint,
-                  currency: marketplace.defaultCurrency,
-                ),
-                const SizedBox(height: 12),
-                _amountField(
-                  controller: _sellCtrl,
-                  label: l10n.inputSellPrice,
-                  hint: l10n.inputSellPriceHint,
-                  currency: marketplace.defaultCurrency,
-                ),
-                const SizedBox(height: 12),
-                Row(
-                  children: [
-                    Expanded(
-                      child: _percentField(
-                        controller: _commissionCtrl,
-                        label: l10n.inputCommissionRate,
-                      ),
-                    ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: _percentField(
-                        controller: _vatCtrl,
-                        label: l10n.inputVatRate,
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 12),
-                Row(
-                  children: [
-                    Expanded(
-                      child: _amountField(
-                        controller: _shippingCtrl,
-                        label: l10n.inputShipping,
-                        currency: marketplace.defaultCurrency,
-                      ),
-                    ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: _amountField(
-                        controller: _opCostsCtrl,
-                        label: l10n.inputOperationalCosts,
-                        hint: l10n.inputOperationalCostsHint,
-                        currency: marketplace.defaultCurrency,
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 22),
-                Row(
-                  children: [
-                    Expanded(
-                      child: FilledButton(
-                        onPressed: _onCalculate,
-                        child: Text(l10n.actionCalculate),
-                      ),
-                    ),
-                    const SizedBox(width: 10),
-                    OutlinedButton(
-                      onPressed: _onReset,
-                      child: Text(l10n.actionReset),
-                    ),
-                  ],
-                ),
-                if (_result != null) ...[
-                  const SizedBox(height: 22),
+
+                if (_result != null && _lastInputs != null) ...[
+                  const SizedBox(height: 26),
                   ResultCard(
                     result: _result!,
-                    currency: marketplace.defaultCurrency,
+                    inputs: _lastInputs!,
+                    marketplace: marketplace,
+                    onCompare: _onCompare,
                   ),
-                  const SizedBox(height: 14),
-                  SizedBox(
-                    width: double.infinity,
-                    child: OutlinedButton.icon(
-                      onPressed: _sharing ? null : _onSharePdf,
-                      icon: _sharing
-                          ? SizedBox(
-                              width: 16,
-                              height: 16,
-                              child: CircularProgressIndicator(
-                                strokeWidth: 2,
-                                color: theme.colorScheme.onSurface,
-                              ),
-                            )
-                          : const Icon(Icons.ios_share_rounded, size: 18),
-                      label: Text(l10n.actionSharePdf),
-                    ),
+                  const SizedBox(height: 18),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: CalmButton(
+                          label: l10n.actionSharePdf,
+                          variant: CalmBtnVariant.ghost,
+                          onPressed: _sharing ? null : _onSharePdf,
+                          icon: _sharing
+                              ? const SizedBox(
+                                  width: 14,
+                                  height: 14,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                  ),
+                                )
+                              : const Icon(Icons.ios_share_rounded),
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: CalmButton(
+                          label: _saved
+                              ? l10n.savedToHistory
+                              : l10n.actionSave,
+                          variant: CalmBtnVariant.primary,
+                          onPressed: _saving || _saved ? null : _onSave,
+                          icon: _saving
+                              ? const SizedBox(
+                                  width: 14,
+                                  height: 14,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                  ),
+                                )
+                              : Icon(
+                                  _saved
+                                      ? Icons.check_rounded
+                                      : Icons.bookmark_add_outlined,
+                                ),
+                        ),
+                      ),
+                    ],
                   ),
                   if (!subscription.isPro)
                     Padding(
-                      padding: const EdgeInsets.only(top: 6),
+                      padding: const EdgeInsets.only(top: 10),
                       child: quotaAsync.when(
                         data: (q) {
                           final remaining =
@@ -413,145 +588,162 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
                             0,
                             kDailyFreeReportCap,
                           );
-                          return Text(
-                            l10n.dailyCapCounter(
-                              q.reportsToday,
-                              kDailyFreeReportCap,
+                          return Center(
+                            child: Text(
+                              l10n.dailyCapCounter(
+                                q.reportsToday,
+                                kDailyFreeReportCap,
+                              ),
+                              style: TextStyle(
+                                color: remaining == 0 ? p.warn : p.subtle,
+                                fontSize: 12.5,
+                                letterSpacing: -0.06,
+                              ),
                             ),
-                            style: theme.textTheme.bodySmall?.copyWith(
-                              color: remaining == 0
-                                  ? BrandColors.warning
-                                  : theme.colorScheme.onSurface
-                                      .withValues(alpha: 0.55),
-                            ),
-                            textAlign: TextAlign.center,
                           );
                         },
                         loading: () => const SizedBox.shrink(),
                         error: (_, _) => const SizedBox.shrink(),
                       ),
                     ),
-                  const SizedBox(height: 8),
-                  SizedBox(
-                    width: double.infinity,
-                    child: OutlinedButton.icon(
-                      onPressed: _saving || _saved ? null : _onSave,
-                      icon: _saving
-                          ? SizedBox(
-                              width: 16,
-                              height: 16,
-                              child: CircularProgressIndicator(
-                                strokeWidth: 2,
-                                color: theme.colorScheme.onSurface,
-                              ),
-                            )
-                          : Icon(
-                              _saved
-                                  ? Icons.check_rounded
-                                  : Icons.bookmark_add_outlined,
-                              size: 18,
-                            ),
-                      label: Text(
-                        _saved ? l10n.savedToHistory : l10n.actionSaveToHistory,
-                      ),
-                    ),
-                  ),
                 ],
               ],
             ),
     );
   }
 
-  Widget _amountField({
-    required TextEditingController controller,
-    required String label,
-    String? hint,
-    required String currency,
+  String? _fieldHint({
+    required double current,
+    required double defaultValue,
+    required AppLocalizations l10n,
   }) {
-    return TextField(
-      controller: controller,
-      keyboardType: const TextInputType.numberWithOptions(decimal: true),
-      inputFormatters: [
-        FilteringTextInputFormatter.allow(RegExp(r'[0-9.,]')),
-      ],
-      decoration: InputDecoration(
-        labelText: label,
-        hintText: hint,
-        prefixText: _prefixFor(currency),
-      ),
-    );
-  }
-
-  Widget _percentField({
-    required TextEditingController controller,
-    required String label,
-  }) {
-    return TextField(
-      controller: controller,
-      keyboardType: const TextInputType.numberWithOptions(decimal: true),
-      inputFormatters: [
-        FilteringTextInputFormatter.allow(RegExp(r'[0-9.,]')),
-      ],
-      decoration: InputDecoration(
-        labelText: label,
-        suffixText: '%',
-      ),
-    );
-  }
-
-  String _prefixFor(String currency) {
-    switch (currency) {
-      case 'TRY':
-        return '₺ ';
-      case 'USD':
-        return '\$ ';
-      case 'EUR':
-        return '€ ';
-      case 'GBP':
-        return '£ ';
-      default:
-        return '';
-    }
+    if ((current - defaultValue).abs() < 0.01) return l10n.fieldHintDefault;
+    return l10n.fieldHintEdited;
   }
 }
 
-class _BrandTitle extends StatelessWidget {
-  const _BrandTitle();
+/// Item name underline input + inline category chip beneath. Mirrors
+/// the prototype's "What are you selling?" + folder chip pair.
+class _ItemNameRow extends StatelessWidget {
+  const _ItemNameRow({
+    required this.controller,
+    required this.placeholder,
+    required this.category,
+    required this.onCategoryChanged,
+  });
+
+  final TextEditingController controller;
+  final String placeholder;
+  final Category? category;
+  final ValueChanged<Category> onCategoryChanged;
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return Row(
-      mainAxisSize: MainAxisSize.min,
+    final p = CalmPalette.of(context);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Container(
-          width: 28,
-          height: 28,
           decoration: BoxDecoration(
-            color: BrandColors.accent,
-            borderRadius: BorderRadius.circular(7),
+            border: Border(bottom: BorderSide(color: p.border)),
           ),
-          alignment: Alignment.center,
-          child: const Text(
-            'K',
+          padding: const EdgeInsets.fromLTRB(0, 4, 0, 8),
+          child: TextField(
+            controller: controller,
+            textCapitalization: TextCapitalization.sentences,
+            cursorColor: p.accent,
             style: TextStyle(
-              color: BrandColors.accentForeground,
-              fontWeight: FontWeight.w800,
-              fontSize: 16,
-              height: 1,
-              letterSpacing: -0.4,
+              color: p.fg,
+              fontSize: 20,
+              fontWeight: FontWeight.w500,
+              letterSpacing: -0.5,
+            ),
+            decoration: InputDecoration(
+              isCollapsed: true,
+              border: InputBorder.none,
+              enabledBorder: InputBorder.none,
+              focusedBorder: InputBorder.none,
+              contentPadding: EdgeInsets.zero,
+              hintText: placeholder,
+              hintStyle: TextStyle(
+                color: p.subtle.withValues(alpha: 0.7),
+                fontWeight: FontWeight.w400,
+              ),
             ),
           ),
         ),
-        const SizedBox(width: 10),
-        Text(
-          'Kârly',
-          style: theme.textTheme.titleLarge?.copyWith(
-            fontWeight: FontWeight.w700,
-            letterSpacing: -0.3,
+        const SizedBox(height: 12),
+        Align(
+          alignment: Alignment.centerLeft,
+          child: CategoryPicker(
+            selected: category,
+            onChanged: onCategoryChanged,
           ),
         ),
       ],
+    );
+  }
+}
+
+class _AdvancedToggle extends StatelessWidget {
+  const _AdvancedToggle({required this.expanded, required this.onTap});
+
+  final bool expanded;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final p = CalmPalette.of(context);
+    return InkWell(
+      onTap: onTap,
+      child: Container(
+        decoration: BoxDecoration(
+          border: Border(top: BorderSide(color: p.border)),
+        ),
+        padding: const EdgeInsets.symmetric(vertical: 14),
+        child: Row(
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    l10n.actionShowFees,
+                    style: TextStyle(
+                      color: p.fg,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                      letterSpacing: -0.07,
+                    ),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    expanded
+                        ? l10n.actionShowFeesShown
+                        : l10n.actionShowFeesHidden,
+                    style: TextStyle(
+                      color: p.subtle,
+                      fontSize: 12,
+                      letterSpacing: -0.06,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            AnimatedRotation(
+              turns: expanded ? 0.5 : 0,
+              duration: const Duration(milliseconds: 200),
+              child: Icon(
+                Icons.expand_more_rounded,
+                size: 18,
+                color: p.subtle,
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

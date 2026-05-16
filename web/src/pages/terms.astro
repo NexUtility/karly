@@ -1,242 +1,226 @@
 ---
 import LegalLayout from "../layouts/LegalLayout.astro";
 
-const lastUpdated = "May 15, 2026";
-const effectiveDate = "May 15, 2026";
-
 const sections = [
-  { id: "acceptance", title: "1. Acceptance" },
-  { id: "eligibility", title: "2. Eligibility" },
-  { id: "license", title: "3. License" },
-  { id: "subscriptions", title: "4. Subscriptions" },
-  { id: "ads", title: "5. Advertising" },
-  { id: "accuracy", title: "6. Calculator accuracy" },
-  { id: "user-content", title: "7. Your inputs" },
-  { id: "acceptable-use", title: "8. Acceptable use" },
-  { id: "ip", title: "9. Intellectual property" },
-  { id: "third-party", title: "10. Third-party services" },
-  { id: "disclaimer", title: "11. Disclaimer" },
-  { id: "liability", title: "12. Limitation of liability" },
-  { id: "indemnity", title: "13. Indemnity" },
-  { id: "termination", title: "14. Termination" },
-  { id: "law", title: "15. Governing law" },
-  { id: "changes", title: "16. Changes" },
-  { id: "contact", title: "17. Contact" },
+  { id: "what-it-is", title: "What Kârly is" },
+  { id: "not-advice", title: "Not financial advice" },
+  { id: "account", title: "No account needed" },
+  { id: "free-tier", title: "Free tier & limits" },
+  { id: "pro-tier", title: "Pro tier & billing" },
+  { id: "refunds", title: "Refunds & cancellation" },
+  { id: "acceptable-use", title: "Acceptable use" },
+  { id: "availability", title: "Availability" },
+  { id: "warranty", title: "No warranty" },
+  { id: "liability", title: "Limit of liability" },
+  { id: "changes", title: "Changes to these terms" },
+  { id: "contact", title: "Contact" },
 ];
 ---
 
 <LegalLayout
-  title="Terms of Service"
-  description="The terms governing use of the Kârly mobile app and this website."
-  lastUpdated={lastUpdated}
-  effectiveDate={effectiveDate}
+  eyebrow="Terms of service"
+  title="The deal between us."
+  lede="By using Kârly, you agree to these terms. We've tried to keep them short, fair, and in plain English. No fine-print booby traps."
+  description="Kârly's terms of service. The deal between you and us, in plain English."
+  lastUpdated="May 13, 2026"
+  meta={["v0.2", "Governing law · Türkiye"]}
   sections={sections}
 >
-  <p>
-    These Terms of Service (the <strong>"Terms"</strong>) form a binding
-    agreement between you and <strong>NexUtility</strong>
-    (<strong>"NexUtility"</strong>, <strong>"we"</strong>, <strong>"us"</strong>)
-    and govern your use of the <strong>Kârly</strong> mobile app and this
-    website (collectively, the <strong>"Services"</strong>). These Terms
-    incorporate our <a href="/privacy">Privacy Policy</a>.
-  </p>
+  <section id="what-it-is">
+    <h2>What Kârly is</h2>
+    <p>
+      Kârly is a mobile calculator that runs the same profit math across ten
+      marketplaces. You type your numbers, we apply each marketplace&rsquo;s
+      default commission, VAT and listing fees, and show you a net profit,
+      margin, ROI, and breakeven price.
+    </p>
+    <p>
+      &ldquo;Kârly,&rdquo; &ldquo;the app,&rdquo; and &ldquo;we&rdquo; mean
+      the Kârly software, made by NexUtility. &ldquo;You&rdquo; means whoever
+      is using the app — usually a small online seller.
+    </p>
+  </section>
 
-  <h2 id="acceptance">1. Acceptance</h2>
-  <p>
-    By installing, accessing, or using the Services you agree to these
-    Terms. If you do not agree, do not install or use the Services.
-  </p>
+  <section id="not-advice">
+    <h2>Not financial, tax, or legal advice</h2>
+    <div class="callout">
+      Kârly is a calculator, not an accountant. The numbers we show are the
+      result of arithmetic on the inputs you provide, against the public
+      default rates each marketplace publishes. Real-world commissions can
+      vary by category, seller tier, region, and negotiation. Real-world
+      taxes depend on your jurisdiction and your particular setup.
+    </div>
+    <p>
+      Use Kârly to estimate, not to file taxes. For anything that matters
+      legally or financially, talk to an accountant or tax advisor licensed
+      in your jurisdiction.
+    </p>
+  </section>
 
-  <h2 id="eligibility">2. Eligibility</h2>
-  <p>
-    You must be at least 13 years old (or the higher minimum age required
-    by your country) to use the Services. If you are under the age of
-    majority, you may use the Services only with the consent of a parent
-    or guardian who accepts these Terms on your behalf. Kârly is intended
-    for adult business use; the calculator does not produce legal,
-    financial, or tax advice.
-  </p>
+  <section id="account">
+    <h2>No account needed</h2>
+    <p>
+      There is no sign-up. There is no login. There is no Kârly password to
+      forget. The app works as soon as you install it. Your data is stored
+      on your device — see our
+      <a class="inline" href="/privacy">privacy policy</a> for specifics.
+    </p>
+  </section>
 
-  <h2 id="license">3. License</h2>
-  <p>
-    Subject to these Terms, NexUtility grants you a limited, personal,
-    non-exclusive, non-transferable, revocable license to install and use
-    the Services. You may not copy, modify, redistribute, reverse engineer,
-    decompile, or attempt to extract the source code of Kârly except as
-    expressly permitted by law.
-  </p>
+  <section id="free-tier">
+    <h2>Free tier &amp; limits</h2>
+    <p>The free tier of Kârly includes:</p>
+    <ul>
+      <li>Access to all ten marketplaces and the full calculator</li>
+      <li>
+        Up to three calculations per local-time day (counter resets at
+        midnight your time)
+      </li>
+      <li>Unlimited PDF reports of the calculations you do run</li>
+      <li>Light and dark themes, English and Türkçe interface</li>
+    </ul>
+    <p>
+      The free tier does not include History (saving past calculations) or
+      the cross-marketplace Compare view.
+    </p>
+    <p>
+      We may change the daily limit in future versions if we need to. If we
+      do, we&rsquo;ll explain why in a release note. We won&rsquo;t drop it
+      below something reasonable.
+    </p>
+  </section>
 
-  <h2 id="subscriptions">4. Subscriptions, billing & refunds</h2>
-  <p>
-    Kârly offers an optional subscription that removes ads and unlocks
-    advanced features. The free tier includes ads and a baseline set of
-    marketplaces and calculator features.
-  </p>
-  <ul>
-    <li>
-      <strong>Billing.</strong> All purchases are processed by Google (Play
-      Store) or, when iOS launches, Apple (App Store). NexUtility never
-      receives or stores your payment card details.
-    </li>
-    <li>
-      <strong>Auto-renewal.</strong> Subscriptions automatically renew at
-      the end of each period at the then-current price unless cancelled at
-      least 24 hours before the end of the current period.
-    </li>
-    <li>
-      <strong>Free trials.</strong> Where a free trial is offered, it
-      converts to a paid subscription unless cancelled before the trial
-      ends.
-    </li>
-    <li>
-      <strong>Cancellation.</strong> You can cancel any time from your
-      Google Play (or App Store) account settings. Cancellation stops
-      future renewals and takes effect at the end of the current period.
-    </li>
-    <li>
-      <strong>Restore purchases.</strong> If you reinstall Kârly or switch
-      devices, use the in-app "Restore purchases" option to re-enable an
-      active subscription.
-    </li>
-    <li>
-      <strong>Refunds.</strong> Refunds are handled by Google or Apple
-      according to their policies. We can help you find the right form at
-      <a href="/support">/support</a>.
-    </li>
-  </ul>
-  <p>
-    Subscription entitlements are managed by RevenueCat on our behalf. The
-    Apple Standard EULA does not apply where these Terms differ; in case
-    of conflict between these Terms and the Apple Standard EULA, these
-    Terms prevail to the maximum extent permitted by Apple's
-    <a
-      href="https://www.apple.com/legal/internet-services/itunes/dev/stdeula/"
-      rel="noopener"
-      target="_blank"
-      >Licensed Application End User License Agreement</a
-    >.
-  </p>
+  <section id="pro-tier">
+    <h2>Pro tier &amp; billing</h2>
+    <p>
+      Kârly Pro is a paid subscription that removes the daily calculation
+      cap and unlocks History plus the Compare view. Pricing is shown in the
+      app and may differ slightly between regions because app stores convert
+      currencies.
+    </p>
+    <p>
+      Billing is handled by your platform&rsquo;s app store — Google Play
+      Billing on Android. We do not handle your payment information
+      directly. We use RevenueCat as a thin layer to validate your
+      subscription status on your device.
+    </p>
+    <p>
+      Pro subscriptions auto-renew at the end of each billing period unless
+      you cancel them in your app store account before the renewal date. We
+      don&rsquo;t, and can&rsquo;t, charge you outside of your app store.
+    </p>
+  </section>
 
-  <h2 id="ads">5. Advertising</h2>
-  <p>
-    The free tier of Kârly is supported by advertising delivered through
-    Google AdMob. By using the free tier you agree to receive ads. Where
-    required by law or by Apple's App Tracking Transparency framework, we
-    will ask for your consent before running personalized ads. If you
-    decline, you will continue to see non-personalized ads.
-  </p>
+  <section id="refunds">
+    <h2>Refunds &amp; cancellation</h2>
+    <p>
+      You can cancel a Pro subscription at any time in your Google Play
+      account. Cancellation takes effect at the end of the current billing
+      period — you keep Pro access until then, and we do not pro-rate
+      refunds.
+    </p>
+    <p>
+      If something went genuinely wrong (you were charged twice, a feature
+      you paid for is broken, you bought Pro by accident on a kid&rsquo;s
+      account), write to
+      <a class="inline" href="mailto:hi@nexutility.com">hi@nexutility.com</a>
+      and we&rsquo;ll work it out. Refund issuance for app store purchases
+      ultimately runs through Google or Apple&rsquo;s refund flow, which
+      we&rsquo;ll help you navigate.
+    </p>
+  </section>
 
-  <h2 id="accuracy">6. Calculator accuracy</h2>
-  <p>
-    Kârly models the publicly disclosed commission, listing, payment
-    processing, and similar fees of each supported marketplace. We update
-    these models periodically but do not guarantee they reflect every
-    promotional rate, category-specific override, or contract negotiated
-    individually with a marketplace. Calculator outputs are estimates and
-    should not be relied on as substitutes for the marketplace's own
-    settlement statement, accounting advice, tax advice, or legal advice.
-  </p>
+  <section id="acceptable-use">
+    <h2>Acceptable use</h2>
+    <p>Don&rsquo;t do any of these things with Kârly:</p>
+    <ul>
+      <li>Decompile, reverse-engineer, or modify the app&rsquo;s binaries</li>
+      <li>
+        Scrape, automate, or otherwise abuse the app in a way that bypasses
+        the Pro subscription
+      </li>
+      <li>
+        Use the app to commit fraud (e.g. mock up fake PDF profit reports to
+        deceive a third party)
+      </li>
+      <li>Resell, sublicense, or redistribute the app or its assets</li>
+    </ul>
+    <p>
+      If you do, we may stop providing service to you. Given there is no
+      account, this is mostly theoretical — but it&rsquo;s worth saying.
+    </p>
+  </section>
 
-  <h2 id="user-content">7. Your inputs</h2>
-  <p>
-    You retain ownership of any data you type into Kârly. Calculator inputs
-    are stored on your device by default and are not transmitted to
-    NexUtility. You are responsible for the content you create.
-  </p>
+  <section id="availability">
+    <h2>Availability</h2>
+    <p>
+      Kârly is currently published for Android in Türkiye and globally
+      where Google Play allows. iOS is on the roadmap but not committed to a
+      date. The app does not require an internet connection for the
+      calculator itself, but app store features (purchasing Pro, restoring
+      purchases, app updates) do.
+    </p>
+    <p>
+      If you live in a country where we cannot legally provide the app, or
+      where your app store does not list it, we are not able to make it
+      available to you. We do not provide sideloaded builds.
+    </p>
+  </section>
 
-  <h2 id="acceptable-use">8. Acceptable use</h2>
-  <p>You agree not to:</p>
-  <ul>
-    <li>Use the Services in violation of any applicable law.</li>
-    <li>Reverse engineer, tamper with, or interfere with the Services.</li>
-    <li>Use automated means to scrape, copy, or overload the Services.</li>
-    <li>
-      Attempt to circumvent ads, paywalls, license checks, or rate limits.
-    </li>
-    <li>Use the Services to infringe anyone else's rights.</li>
-  </ul>
+  <section id="warranty">
+    <h2>No warranty</h2>
+    <p>
+      Kârly is provided <em>as is</em>. We try hard to make the math
+      correct, the marketplace defaults current, and the app reliable — but
+      we make no formal warranty that it will be uninterrupted, bug-free, or
+      that it will produce the exact same number a marketplace&rsquo;s own
+      dashboard produces (those dashboards have access to your specific
+      seller tier; Kârly uses public defaults, which you can override).
+    </p>
+  </section>
 
-  <h2 id="ip">9. Intellectual property</h2>
-  <p>
-    The Services, including their look-and-feel, source code, graphics,
-    marketplace fee models, and "Kârly" / "NexUtility" trademarks, are
-    owned by NexUtility and its licensors and are protected by copyright,
-    trademark, and other intellectual property laws. No rights are granted
-    to you other than those expressly stated in these Terms. Marketplace
-    names mentioned in the app and this website are trademarks of their
-    respective owners and are used for identification only.
-  </p>
+  <section id="liability">
+    <h2>Limit of liability</h2>
+    <p>
+      To the maximum extent permitted by applicable law, NexUtility&rsquo;s
+      total liability arising out of or relating to Kârly is limited to the
+      amount you paid us for Kârly Pro in the twelve months before the
+      claim arose (or, for free-tier users, zero — because that&rsquo;s what
+      you paid us).
+    </p>
+    <p>
+      We are not liable for indirect, incidental, or consequential damages —
+      for example, lost profits from a listing decision you made using a
+      Kârly estimate. The calculator is a tool; the decision is yours.
+    </p>
+  </section>
 
-  <h2 id="third-party">10. Third-party services</h2>
-  <p>
-    The Services rely on third-party services (Google Play, Cloudflare,
-    Google AdMob, RevenueCat, and, when iOS launches, the Apple App Store).
-    Your use of those services is subject to their own terms. We are not
-    responsible for outages or actions of third-party services.
-  </p>
+  <section id="changes">
+    <h2>Changes to these terms</h2>
+    <p>
+      We may update these terms when we ship a new version with materially
+      different mechanics — for example, adding a new paid tier, or
+      changing the free-tier cap. When we do, we&rsquo;ll update the
+      &ldquo;Last updated&rdquo; date at the top and surface a notice on
+      the next app launch. If a change is unfavorable to you, you can
+      simply stop using the app, and any active Pro subscription can be
+      cancelled in your app store.
+    </p>
+  </section>
 
-  <h2 id="disclaimer">11. Disclaimer of warranties</h2>
-  <p>
-    THE SERVICES ARE PROVIDED <strong>"AS IS"</strong> AND
-    <strong>"AS AVAILABLE"</strong> WITHOUT WARRANTIES OF ANY KIND, EXPRESS
-    OR IMPLIED, INCLUDING BUT NOT LIMITED TO MERCHANTABILITY, FITNESS FOR
-    A PARTICULAR PURPOSE, AND NON-INFRINGEMENT. WE DO NOT WARRANT THAT THE
-    SERVICES WILL BE ERROR-FREE OR UNINTERRUPTED, OR THAT THE CALCULATOR
-    OUTPUTS WILL MATCH ANY SPECIFIC SETTLEMENT.
-  </p>
-
-  <h2 id="liability">12. Limitation of liability</h2>
-  <p>
-    TO THE MAXIMUM EXTENT PERMITTED BY LAW, NEXUTILITY WILL NOT BE LIABLE
-    FOR INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, OR PUNITIVE DAMAGES,
-    OR FOR LOST PROFITS, REVENUE, DATA, OR GOODWILL. OUR TOTAL LIABILITY
-    ARISING OUT OF OR RELATING TO THESE TERMS OR THE SERVICES WILL NOT
-    EXCEED THE AMOUNTS YOU PAID US IN THE 12 MONTHS BEFORE THE EVENT
-    GIVING RISE TO THE CLAIM, OR USD 50, WHICHEVER IS GREATER.
-  </p>
-
-  <h2 id="indemnity">13. Indemnity</h2>
-  <p>
-    You agree to indemnify and hold harmless NexUtility against any claims
-    arising from (a) your misuse of the Services, (b) your violation of
-    these Terms, or (c) your violation of any third-party rights.
-  </p>
-
-  <h2 id="termination">14. Termination</h2>
-  <p>
-    You may stop using the Services at any time by uninstalling Kârly. We
-    may suspend or terminate your access if you breach these Terms or use
-    the Services in a way that endangers other users or our business.
-    Sections that by their nature should survive termination (intellectual
-    property, disclaimers, limitation of liability, indemnity, governing
-    law) survive.
-  </p>
-
-  <h2 id="law">15. Governing law and disputes</h2>
-  <p>
-    These Terms are governed by the laws of <code>[Your jurisdiction]</code>,
-    without regard to conflicts-of-law rules. Any dispute will be resolved
-    in the courts of <code>[Your venue]</code>, except where mandatory
-    consumer-protection law in your country grants you a different forum.
-    Nothing in these Terms limits your statutory consumer rights.
-  </p>
-
-  <h2 id="changes">16. Changes</h2>
-  <p>
-    We may update these Terms occasionally. The "Last updated" date at the
-    top will reflect the most recent revision. If a change is material,
-    we will notify you in the app or via email. Continued use of the
-    Services after changes take effect constitutes acceptance.
-  </p>
-
-  <h2 id="contact">17. Contact</h2>
-  <p>
-    NexUtility — <a href="mailto:legal@nexutility.dev">legal@nexutility.dev</a>.
-  </p>
-
-  <p class="!mt-12 rounded-md border border-warning/30 bg-warning/5 p-4 text-sm text-fg-muted">
-    <strong>Note for the team:</strong> Replace bracketed values
-    (governing jurisdiction, venue) and have these Terms reviewed by
-    counsel before submitting Kârly for review.
-  </p>
+  <section id="contact">
+    <h2>Contact</h2>
+    <p>
+      Questions about these terms, or about a specific billing or account
+      issue? Write to
+      <a class="inline" href="mailto:hi@nexutility.com">hi@nexutility.com</a>.
+    </p>
+    <p style="margin-top:24px; font-size: 14px; color: var(--subtle)">
+      Kârly is a product of NexUtility, established in Türkiye. Governing
+      law for these terms is Turkish law, and any dispute will be resolved
+      in the courts of Istanbul — unless local consumer-protection rules in
+      your country give you a different mandatory forum, in which case
+      those rules win.
+    </p>
+  </section>
 </LegalLayout>

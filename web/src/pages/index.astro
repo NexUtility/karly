@@ -1,243 +1,371 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 
-const calculations = [
+const howSteps = [
   {
-    title: "Net profit",
-    body: "Per unit and per batch, after every commission, transaction fee, shipping cost, and tax.",
+    step: "01",
+    title: "Pick a marketplace",
+    body: "Trendyol, Hepsiburada, Amazon, Etsy, eBay — 10 in total. We've already loaded each one's commission, VAT, and any listing fees.",
   },
   {
-    title: "Profit margin",
-    body: "What you actually keep, as a percentage of the sell price — not the manufacturer marketing version.",
+    step: "02",
+    title: "Enter cost & price",
+    body: "What you paid for it. What you're listing it at. That's enough to get a real answer. Shipping and ads are optional — tap to expand.",
   },
   {
-    title: "ROI",
-    body: "Return on the capital you tie up per unit. Useful when comparing thin-margin volume to thicker margins.",
-  },
-  {
-    title: "Breakeven price",
-    body: "The minimum sell price that still covers cost, fees, and operational overhead. The line below which you lose money.",
+    step: "03",
+    title: "See your net, line by line",
+    body: "Margin, ROI, breakeven price, and a plain-language breakdown of every fee. Share a PDF or save it to History to compare later.",
   },
 ];
 
-const marketplaces = [
-  "Trendyol",
-  "Hepsiburada",
-  "N11",
-  "Amazon",
-  "Etsy",
-  "eBay",
-  "Shopify",
+const trMarkets = [
+  { flag: "🇹🇷", name: "Trendyol", fee: "18% · 20% VAT · ₺" },
+  { flag: "🇹🇷", name: "Hepsiburada", fee: "15.5% · 20% VAT · ₺" },
+  { flag: "🇹🇷", name: "n11", fee: "13% · 20% VAT · ₺" },
+  { flag: "🇹🇷", name: "Çiçek Sepeti", fee: "18% · 20% VAT · ₺" },
+  { flag: "🇹🇷", name: "Pazarama", fee: "12% · 20% VAT · ₺" },
 ];
 
-const principles = [
+const globalMarkets = [
+  { flag: "🇺🇸", name: "Amazon US", fee: "15% referral · $" },
+  { flag: "🇺🇸", name: "Etsy", fee: "6.5% + $0.20 · $" },
+  { flag: "🇺🇸", name: "eBay", fee: "13.5% final value · $" },
+  { flag: "🌐", name: "Shopify", fee: "2.9% + $0.30 · $" },
+  { flag: "⚙", name: "Custom", fee: "Set your own" },
+];
+
+const promises = [
   {
-    title: "Honest numbers",
-    body: "Every fee modelled — listing, commission, payment processing, return reserve. The number you see is the number you'll see in your settlement.",
+    title: "No ads. Ever.",
+    body: "We have never wired AdMob, and we never will. Not in Free. Not in Pro. Not later “to support the team.” The number on your screen is the number you came for.",
   },
   {
-    title: "Cross-border native",
-    body: "Currency-aware. Set sell price in USD/EUR/TRY and Kârly handles the conversion at your chosen FX rate.",
+    title: "No tracking.",
+    body: "No analytics SDK. No third-party scripts. Your saved calculations live on your device in your phone's preferences. We don't have a server that stores your data, because we don't have a server.",
   },
   {
-    title: "On-device, private",
-    body: "Calculations run locally. Your costs and margins never leave your phone. No accounts, no sync, no analytics on numbers.",
+    title: "Honest paywall.",
+    body: "Pro is exactly three things: unlimited calculations, saved history with filters, and unlimited PDF reports. We don't promise features we haven't built.",
+  },
+];
+
+const faqs = [
+  {
+    q: "Why is the free tier capped at 3 calculations a day?",
+    a: "Because a real calculator with up-to-date marketplace fees costs us something to maintain, and we refuse to run ads. Three a day is enough to test product ideas casually; if you're listing daily and want History to keep your numbers, Pro pays for itself.",
   },
   {
-    title: "Fast, not fancy",
-    body: "Pick marketplace, type cost, type sell price, see profit. Three fields, one screen. No setup.",
+    q: "Are the commission rates accurate?",
+    a: "They are the marketplaces' published default rates. Category-specific tweaks and seller-tier discounts exist — you can override commission and VAT on every calculation, and we'll honor your number.",
+  },
+  {
+    q: "Does Kârly sync with my Etsy / Amazon / Trendyol account?",
+    a: "No. Kârly is a manual calculator, not an inventory sync tool. You type the numbers, we do the math. That's also why it works without an internet connection and why your data never leaves your phone.",
+  },
+  {
+    q: "Where does my saved data live?",
+    a: "On your phone, in the OS's encrypted preferences store. There is no Kârly account. There is no Kârly server. If you delete the app, your data is gone — which means uninstall &amp; reinstall is the only way to “reset” everything.",
+  },
+  {
+    q: "iPhone version?",
+    a: "Coming. Android first — that's where our Turkish seller community actually is. iOS lands after Android revenue covers the Apple Developer Program fee. Honest.",
+  },
+  {
+    q: "I want a feature you don't have. Can I write to you?",
+    a: 'Yes — <a class="inline" href="mailto:hi@nexutility.com">hi@nexutility.com</a>. Cross-marketplace SKU comparison, live FX, and per-category commission tables are all on the roadmap; we\'d rather build them based on what you actually need than guess.',
   },
 ];
 ---
 
-<BaseLayout title="Kârly">
-  <!-- HERO -->
-  <section class="relative overflow-hidden">
-    <div class="absolute inset-0 grid-bg" aria-hidden="true"></div>
-    <div
-      class="absolute -top-32 left-1/2 h-[480px] w-[680px] -translate-x-1/2 rounded-full bg-accent/10 blur-3xl"
-      aria-hidden="true"
-    >
-    </div>
-
-    <div class="container-page relative pt-24 pb-24 md:pt-32 md:pb-32">
-      <div class="mx-auto max-w-3xl text-center">
-        <span
-          class="inline-flex items-center gap-2 rounded-full border border-border bg-bg-elev/60 px-3 py-1 text-xs font-mono text-fg-muted backdrop-blur"
-        >
-          <span class="relative flex h-1.5 w-1.5">
-            <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent opacity-75"></span>
-            <span class="relative inline-flex h-1.5 w-1.5 rounded-full bg-accent"></span>
-          </span>
-          Coming to Google Play
-        </span>
-
-        <h1
-          class="mt-6 text-balance text-5xl font-semibold leading-[1.05] tracking-tight md:text-7xl"
-        >
-          <span class="text-gradient">Know your real profit</span>
-          <br />
-          before the listing goes live.
+<BaseLayout
+  title="Kârly"
+  description="Know what you actually keep. Kârly runs the same math across 10 marketplaces — Trendyol, Etsy, Amazon, eBay and more — so you can decide where to list before you list. No ads. No tracking."
+>
+  <!-- ── HERO ────────────────────────────────────────────────── -->
+  <header class="page hero" data-screen-label="Landing — Hero">
+    <div class="hero-grid">
+      <div>
+        <span class="eyebrow">For dropshippers &amp; online sellers</span>
+        <h1>
+          Know what<br />
+          you <span class="accent">actually</span> keep.
         </h1>
-
-        <p class="mx-auto mt-7 max-w-xl text-pretty text-base leading-relaxed text-fg-muted md:text-lg">
-          Kârly is a profit calculator for marketplace sellers. Pick a
-          marketplace, plug in your cost and sell price, see net margin, ROI,
-          and breakeven in seconds — every fee already modelled.
+        <p class="lede">
+          Type your cost and the price you&rsquo;d list at. Kârly tells you the
+          net profit on Trendyol, Etsy, Amazon, eBay — same math, every
+          marketplace — so you can decide where to list <em>before</em> you
+          list.
         </p>
 
-        <div class="mt-9 flex flex-wrap items-center justify-center gap-3">
-          <span
-            class="inline-flex items-center gap-2 rounded-md border border-border bg-bg-elev/60 px-5 py-2.5 text-sm font-medium text-fg-muted"
-          >
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-              <path d="M3 20.5V3.5a.5.5 0 0 1 .75-.4l13.5 8.5a.5.5 0 0 1 0 .8l-13.5 8.5a.5.5 0 0 1-.75-.4Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"></path>
+        <div class="hero-ctas">
+          <a class="btn btn-primary" href="#download">
+            Get Kârly
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+              <path
+                d="M4 7h6m0 0L7 4m3 3L7 10"
+                stroke="currentColor"
+                stroke-width="1.5"
+                stroke-linecap="round"
+              ></path>
             </svg>
-            Google Play — soon
-          </span>
-          <a
-            href="/support"
-            class="inline-flex items-center gap-1.5 rounded-md border border-border bg-bg-elev/60 px-5 py-2.5 text-sm font-medium text-fg backdrop-blur transition-colors hover:border-border-strong hover:bg-bg-elev"
-          >
-            Get notified
           </a>
+          <a class="btn btn-ghost" href="#how">See how it works</a>
+        </div>
+
+        <div class="hero-trust">
+          <span>No ads, ever</span>
+          <span>No tracking</span>
+          <span>Free tier is genuinely free</span>
+        </div>
+      </div>
+
+      <!-- Phone mockup — preview of the calculator -->
+      <div class="phone-stage">
+        <div
+          class="phone"
+          role="img"
+          aria-label="Kârly mobile app showing the calculator screen"
+        >
+          <div class="phone-screen">
+            <div class="status">
+              <span>9:41</span>
+              <span>● ●</span>
+            </div>
+            <div class="phone-app">
+              <div class="topbar">
+                <span class="km">K</span>
+                <span class="ksub">Kârly</span>
+              </div>
+              <div>
+                <h4>New entry</h4>
+                <div class="sub-line">Two numbers in, profit out.</div>
+              </div>
+              <div class="mp-chip">
+                <span class="mp-flag">🇹🇷</span>
+                <span><strong>Trendyol</strong> · 18% fee · TRY</span>
+              </div>
+              <div class="item-line">Linen pillow cover · oat</div>
+              <div class="twocol">
+                <div class="col">
+                  <label>What you paid</label>
+                  <div class="val">
+                    <span class="sym">₺</span><span class="num">180</span>
+                  </div>
+                </div>
+                <div class="col">
+                  <label>Selling for</label>
+                  <div class="val">
+                    <span class="sym">₺</span><span class="num">499</span>
+                  </div>
+                </div>
+              </div>
+              <div class="you-keep">
+                <div>
+                  <div class="lbl">You&rsquo;d keep</div>
+                  <div class="amt num">+₺102.48</div>
+                </div>
+                <div class="pct num">20.5% margin</div>
+              </div>
+              <div class="cta">See the breakdown</div>
+              <div class="tabs">
+                <span class="active">Calculate</span>
+                <span>History</span>
+                <span>Settings</span>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
-  </section>
+  </header>
 
-  <!-- WHAT IT CALCULATES -->
-  <section class="container-page py-20 md:py-24">
-    <div class="mx-auto max-w-2xl text-center">
-      <p class="font-mono text-xs uppercase tracking-widest text-fg-muted">What it does</p>
-      <h2 class="mt-3 text-3xl font-semibold tracking-tight md:text-4xl">
-        Four numbers that actually matter.
-      </h2>
-      <p class="mt-4 text-fg-muted">
-        Skip the spreadsheet. These are the metrics Kârly returns every time
-        you change a field.
-      </p>
-    </div>
+  <!-- ── HOW IT WORKS ─────────────────────────────────────────── -->
+  <section id="how" class="page" data-screen-label="Landing — How it works">
+    <span class="eyebrow">How it works</span>
+    <h2>Three taps to a real number.</h2>
+    <p class="lede" style="margin-top:18px">
+      Most marketplace calculators ask for fifteen fields and still get the
+      math wrong. Kârly pre-fills your marketplace&rsquo;s commission and VAT,
+      so you only enter what you actually know.
+    </p>
 
-    <div class="mt-14 grid gap-px overflow-hidden rounded-xl border border-border bg-border md:grid-cols-2">
+    <div class="how-grid">
       {
-        calculations.map((c, i) => (
-          <div class="bg-bg-elev/40 p-7 transition-colors hover:bg-bg-elev">
-            <div class="flex items-center gap-3">
-              <span class="font-mono text-xs text-fg-muted">
-                {String(i + 1).padStart(2, "0")}
-              </span>
-              <div class="h-px flex-1 bg-border"></div>
-            </div>
-            <h3 class="mt-4 text-lg font-semibold text-fg">{c.title}</h3>
-            <p class="mt-2 text-sm leading-relaxed text-fg-muted">{c.body}</p>
+        howSteps.map((s) => (
+          <div class="how-card">
+            <span class="how-step">{s.step}</span>
+            <h3>{s.title}</h3>
+            <p>{s.body}</p>
           </div>
         ))
       }
     </div>
   </section>
 
-  <!-- MARKETPLACES -->
-  <section class="container-page py-20 md:py-24">
-    <div class="mx-auto max-w-2xl text-center">
-      <p class="font-mono text-xs uppercase tracking-widest text-fg-muted">
-        Marketplaces
+  <!-- ── MARKETPLACES ─────────────────────────────────────────── -->
+  <section
+    id="markets"
+    class="markets"
+    data-screen-label="Landing — Marketplaces"
+  >
+    <div class="page">
+      <span class="eyebrow">Marketplaces</span>
+      <h2>Ten marketplaces.<br />One calculator.</h2>
+      <p class="lede" style="margin-top:18px">
+        Cross-border selling is the wedge. Most calculators handle Etsy <em>or</em>
+        Trendyol, never both. Kârly handles both — and then some.
       </p>
-      <h2 class="mt-3 text-3xl font-semibold tracking-tight md:text-4xl">
-        Fee models for the platforms you actually sell on.
-      </h2>
-      <p class="mt-4 text-fg-muted">
-        Pre-loaded with current commission rates, payment processing fees,
-        and listing costs for each marketplace below.
-      </p>
-    </div>
 
-    <ul
-      class="mx-auto mt-12 flex max-w-3xl flex-wrap items-center justify-center gap-2"
-    >
-      {
-        marketplaces.map((m) => (
-          <li class="rounded-full border border-border bg-bg-elev/40 px-4 py-2 text-sm text-fg-muted transition-colors hover:border-border-strong hover:bg-bg-elev hover:text-fg">
-            {m}
-          </li>
-        ))
-      }
-      <li class="rounded-full border border-border bg-bg/40 px-4 py-2 text-sm font-mono text-fg-muted">
-        + more
-      </li>
-    </ul>
-  </section>
-
-  <!-- PRINCIPLES -->
-  <section class="container-page py-20 md:py-24">
-    <div class="mx-auto max-w-2xl text-center">
-      <p class="font-mono text-xs uppercase tracking-widest text-fg-muted">How we built it</p>
-      <h2 class="mt-3 text-3xl font-semibold tracking-tight md:text-4xl">
-        A pragmatist's calculator.
-      </h2>
-    </div>
-
-    <div class="mt-14 grid gap-px overflow-hidden rounded-xl border border-border bg-border md:grid-cols-2">
-      {
-        principles.map((p, i) => (
-          <div class="bg-bg-elev/40 p-7 transition-colors hover:bg-bg-elev">
-            <div class="flex items-center gap-3">
-              <span class="font-mono text-xs text-fg-muted">
-                {String(i + 1).padStart(2, "0")}
-              </span>
-              <div class="h-px flex-1 bg-border"></div>
+      <div class="region-tag" style="margin-top:48px">Türkiye</div>
+      <div class="markets-grid">
+        {
+          trMarkets.map((m) => (
+            <div class="market-card">
+              <div class="flag">{m.flag}</div>
+              <div class="name">{m.name}</div>
+              <div class="fee">{m.fee}</div>
             </div>
-            <h3 class="mt-4 text-lg font-semibold text-fg">{p.title}</h3>
-            <p class="mt-2 text-sm leading-relaxed text-fg-muted">{p.body}</p>
-          </div>
+          ))
+        }
+      </div>
+
+      <div class="region-tag" style="margin-top:40px">Global</div>
+      <div class="markets-grid">
+        {
+          globalMarkets.map((m) => (
+            <div class="market-card">
+              <div class="flag">{m.flag}</div>
+              <div class="name">{m.name}</div>
+              <div class="fee">{m.fee}</div>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- ── PROMISES ─────────────────────────────────────────────── -->
+  <section class="page" id="promises" data-screen-label="Landing — Promises">
+    <div class="promises">
+      <span class="eyebrow" style="color: var(--accent)">What we won&rsquo;t do</span>
+      <h2>Three things we&rsquo;ll <span class="accent">never</span> do to you.</h2>
+      <p class="lede">
+        Free tools have a habit of selling you out for ad pennies. Kârly is
+        the opposite — your numbers are yours, your phone stays clean, and we
+        tell you exactly what Pro gives you.
+      </p>
+
+      <div class="promises-grid">
+        {
+          promises.map((p) => (
+            <div class="promise">
+              <h4>{p.title}</h4>
+              <p>{p.body}</p>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- ── PRICING ──────────────────────────────────────────────── -->
+  <section id="pricing" class="page" data-screen-label="Landing — Pricing">
+    <span class="eyebrow">Pricing</span>
+    <h2>Free is free.<br />Pro is small.</h2>
+    <p class="lede" style="margin-top:18px">
+      Run a few calculations a day to test product ideas — free, forever. List
+      enough to want a history of your math? Pro is $1.66 a month.
+    </p>
+
+    <div class="pricing-grid">
+      <div class="price-card">
+        <span class="tier">Free</span>
+        <div class="amount">$0<small>/forever</small></div>
+        <div class="sub-amount">No card. No ads.</div>
+        <ul class="price-bullets">
+          <li>All 10 marketplaces, all the math</li>
+          <li>3 calculations per day</li>
+          <li>Unlimited PDF reports of what you calculated</li>
+          <li>Light + dark, English + Türkçe</li>
+        </ul>
+        <a class="pcta ghost" href="#download">Start free</a>
+      </div>
+      <div class="price-card featured">
+        <span class="save-pill">Save 44%</span>
+        <span class="tier">Pro · Annual</span>
+        <div class="amount">$1.66<small>/mo</small></div>
+        <div class="sub-amount">Billed $19.99 yearly. Or $2.99/month.</div>
+        <ul class="price-bullets">
+          <li><strong>Everything in Free</strong>, plus —</li>
+          <li>Unlimited calculations (no daily cap)</li>
+          <li>History: every calculation, tagged + searchable</li>
+          <li>Filter by marketplace, category, profit, or date</li>
+          <li>Compare the same product across all 10 marketplaces</li>
+        </ul>
+        <a class="pcta primary" href="#download">Get Pro</a>
+      </div>
+    </div>
+
+    <p
+      style="text-align:center; color: var(--subtle); font-size: 13px; margin-top: 28px"
+    >
+      3 days free · cancel anytime · no auto-charge surprises
+    </p>
+  </section>
+
+  <!-- ── FAQ ──────────────────────────────────────────────────── -->
+  <section class="page" data-screen-label="Landing — FAQ">
+    <span class="eyebrow">Honest answers</span>
+    <h2>Things people actually ask.</h2>
+
+    <div class="faq-grid">
+      {
+        faqs.map((f) => (
+          <details class="faq-item">
+            <summary>{f.q}</summary>
+            <div class="answer" set:html={f.a} />
+          </details>
         ))
       }
     </div>
   </section>
 
-  <!-- LEGAL CTA -->
-  <section class="container-page py-20 md:py-24">
-    <div
-      class="overflow-hidden rounded-2xl border border-border bg-gradient-to-br from-bg-elev to-bg-elev/40 p-8 md:p-12"
-    >
-      <div class="grid gap-8 md:grid-cols-[1.6fr_1fr] md:items-center">
-        <div>
-          <p class="font-mono text-xs uppercase tracking-widest text-fg-muted">
-            Transparency
-          </p>
-          <h2 class="mt-3 text-3xl font-semibold tracking-tight md:text-4xl">
-            What we do — and don't — collect.
-          </h2>
-          <p class="mt-4 max-w-xl text-fg-muted">
-            Kârly stores your numbers on your device, not on a server. We
-            disclose every SDK we use and every piece of data Google AdMob
-            and RevenueCat handle on our behalf.
-          </p>
-        </div>
-        <div class="flex flex-col gap-2">
-          <a
-            href="/privacy"
-            class="group flex items-center justify-between rounded-md border border-border bg-bg/40 px-4 py-3 text-sm transition-colors hover:border-border-strong hover:bg-bg/80"
-          >
-            <span class="font-medium text-fg">Privacy Policy</span>
-            <span class="text-fg-muted group-hover:text-accent">→</span>
-          </a>
-          <a
-            href="/terms"
-            class="group flex items-center justify-between rounded-md border border-border bg-bg/40 px-4 py-3 text-sm transition-colors hover:border-border-strong hover:bg-bg/80"
-          >
-            <span class="font-medium text-fg">Terms of Service</span>
-            <span class="text-fg-muted group-hover:text-accent">→</span>
-          </a>
-          <a
-            href="/support"
-            class="group flex items-center justify-between rounded-md border border-border bg-bg/40 px-4 py-3 text-sm transition-colors hover:border-border-strong hover:bg-bg/80"
-          >
-            <span class="font-medium text-fg">Support</span>
-            <span class="text-fg-muted group-hover:text-accent">→</span>
-          </a>
-        </div>
-      </div>
+  <!-- ── BIG CTA ──────────────────────────────────────────────── -->
+  <section
+    id="download"
+    class="page big-cta"
+    data-screen-label="Landing — Download"
+  >
+    <h2>Stop guessing.<br />Start <span class="accent">knowing.</span></h2>
+    <p class="lede">
+      Free to download. Free to keep. Three calculations a day is genuinely
+      enough to try every product idea you&rsquo;ve been sitting on.
+    </p>
+
+    <div class="store-row">
+      <a class="store-badge" href="#" aria-label="Get it on Google Play">
+        <svg class="icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          <path d="M5 3.5l11 8.5-11 8.5V3.5z" opacity=".9"></path>
+          <path d="M5 3.5l11 8.5-7.5 4.5L5 3.5z" opacity=".7"></path>
+          <path d="M16 12l3.5-2-3.5 8L12.5 14 16 12z" opacity=".5"></path>
+        </svg>
+        <span>
+          <span class="top">GET IT ON</span>
+          <span class="bot">Google Play</span>
+        </span>
+      </a>
+      <span class="store-badge disabled" aria-label="Coming soon on App Store">
+        <svg class="icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          <path
+            d="M17.05 12.5c0-2.7 2.2-4 2.3-4-.3-1.8-3.1-2-4-2-1.7-.2-3.3 1-4.2 1-.9 0-2.2-1-3.7-1-2 .1-3.7 1.2-4.7 3-2 3.5-.5 8.6 1.4 11.4.9 1.4 2 3 3.4 2.9 1.4-.1 1.9-.9 3.6-.9s2.2.9 3.6.9c1.5 0 2.5-1.4 3.4-2.8.7-1 1.3-2.2 1.6-3.3-1.9-.8-3.7-3-3.7-5.2zM14.8 5.4c.8-.9 1.3-2.2 1.2-3.4-1.1.1-2.4.7-3.2 1.6-.7.8-1.4 2.1-1.2 3.3 1.2.1 2.4-.6 3.2-1.5z"
+          ></path>
+        </svg>
+        <span>
+          <span class="top">COMING SOON ON</span>
+          <span class="bot">App Store</span>
+        </span>
+      </span>
     </div>
   </section>
 </BaseLayout>

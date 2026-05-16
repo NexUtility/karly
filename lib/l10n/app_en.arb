@@ -86,6 +86,76 @@
   "actionDelete": "Delete",
   "actionCancel": "Cancel",
   "actionClose": "Close",
+  "actionChange": "Change",
+  "actionStartOver": "Start over",
+  "actionShowFees": "Fees & shipping",
+  "actionShowFeesHidden": "Using marketplace defaults",
+  "actionShowFeesShown": "Tap to hide",
+  "actionSeeBreakdown": "See the breakdown",
+  "fieldHintDefault": "default",
+  "fieldHintEdited": "edited",
+  "labelWhatYouPaid": "What you paid",
+  "labelSellingFor": "Selling for",
+  "labelAdsPackaging": "Ads & packaging",
+  "labelCommission": "Commission",
+  "labelVat": "VAT",
+  "calcHeaderTitle": "New entry",
+  "calcHeaderSub": "Two numbers in, profit out. The rest is optional.",
+  "itemNamePlaceholder": "What are you selling?",
+  "fixedListingFeeNote": "{symbol}{amount} fixed listing fee added automatically.",
+  "@fixedListingFeeNote": {
+    "placeholders": {
+      "symbol": {"type": "String"},
+      "amount": {"type": "String"}
+    }
+  },
+
+  "resultYouKeep": "You keep",
+  "resultYouLose": "You''d lose",
+  "resultLossPill": "This sale would lose money",
+  "resultBreakdownHeader": "Here''s the math",
+  "resultRowYouSellFor": "You sell it for",
+  "resultRowMarketplaceTakes": "{marketplace} takes a {pct}% cut",
+  "@resultRowMarketplaceTakes": {
+    "placeholders": {
+      "marketplace": {"type": "String"},
+      "pct": {"type": "String"}
+    }
+  },
+  "resultRowVat": "VAT ({pct}%)",
+  "@resultRowVat": {
+    "placeholders": {"pct": {"type": "String"}}
+  },
+  "resultRowWhatYouPaid": "What you paid for it",
+  "resultRowShipping": "Shipping",
+  "resultRowAdsPackaging": "Ads & packaging",
+  "resultRowListingFee": "Listing fee",
+  "resultRowNetProfit": "Net profit",
+  "resultRowNetLoss": "Net loss",
+  "pdfExported": "PDF report exported.",
+
+  "compareEyebrow": "Compare",
+  "compareTitle": "Where should I sell this?",
+  "compareSubReady": "Same product, same numbers, every marketplace.",
+  "compareSubMissing": "Enter cost and sell price on the calculator first — then come back.",
+  "compareEmptyTitle": "Nothing to compare yet.",
+  "compareEmptyCta": "Back to calculator",
+  "compareSortNet": "By profit",
+  "compareSortMargin": "By margin",
+  "compareBadgeBest": "Best",
+  "compareBadgeCurrent": "Current",
+  "compareBadgeBeta": "Beta",
+  "compareSuggestionEyebrow": "Suggestion",
+  "compareSuggestionBody": "Try {marketplace} — {pct}% margin",
+  "@compareSuggestionBody": {
+    "placeholders": {
+      "marketplace": {"type": "String"},
+      "pct": {"type": "String"}
+    }
+  },
+  "compareEntryTitle": "Would it be better on Etsy? Amazon?",
+  "compareEntryBody": "Compare this product across all marketplaces",
+  "compareHeroChip": "Compare",
 
   "savedToHistory": "Saved to History",
   "removedFromHistory": "Removed",
