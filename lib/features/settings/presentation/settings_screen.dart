@@ -298,8 +298,8 @@ class _UsageCard extends ConsumerWidget {
         loading: () => const SizedBox(height: 60),
         error: (_, _) => const SizedBox.shrink(),
         data: (q) {
-          final cap = kDailyFreeReportCap;
-          final used = q.reportsToday;
+          final cap = kDailyFreeCalcCap;
+          final used = q.calculationsToday;
           final atCap = !isPro && used >= cap;
           final pct = isPro
               ? (used / 10).clamp(0.0, 1.0)

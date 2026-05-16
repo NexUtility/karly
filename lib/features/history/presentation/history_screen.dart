@@ -304,8 +304,8 @@ class _FreeHistoryGate extends StatelessWidget {
         const SizedBox(height: 22),
         CalmButton(
           label: l10n.localeName == 'tr'
-              ? 'Pro\'ya geç · ₺49,92/ay\'dan'
-              : 'See Pro · from \$1.66/mo',
+              ? 'Pro\'ya geç · ₺83,25/ay\'dan'
+              : 'See Pro · from \$3.33/mo',
           variant: CalmBtnVariant.accent,
           size: CalmBtnSize.lg,
           onPressed: () => Navigator.of(context).push(

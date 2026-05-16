@@ -118,15 +118,36 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
     );
   }
 
-  void _onCalculate() {
+  Future<void> _onCalculate() async {
     final m = _marketplace;
     if (m == null) return;
+
+    // Free users are capped at [kDailyFreeCalcCap] calculations per
+    // local-time day. Pro users bypass the check entirely. The PDF
+    // share button is not gated — once you've calculated, you can
+    // share the result as many times as you like.
+    final subscription = ref.read(subscriptionProvider);
+    if (!subscription.isPro) {
+      final quota = await ref.read(usageQuotaProvider.future);
+      if (!quota.freeUserCanCalculateMore()) {
+        if (!mounted) return;
+        await showDailyCapDialog(context);
+        return;
+      }
+    }
+
+    if (!mounted) return;
     final inputs = _buildInputs(m);
     setState(() {
       _result = calculateProfit(inputs);
       _lastInputs = inputs;
       _saved = false;
     });
+
+    // Increment the counter only after a successful calculation.
+    if (!subscription.isPro) {
+      await ref.read(usageQuotaProvider.notifier).recordCalculation();
+    }
   }
 
   void _onReset() {
@@ -152,15 +173,8 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
     final m = _marketplace;
     if (result == null || inputs == null || m == null || _sharing) return;
 
-    final subscription = ref.read(subscriptionProvider);
-    if (!subscription.isPro) {
-      final quota = await ref.read(usageQuotaProvider.future);
-      if (!quota.freeUserCanShareMore()) {
-        if (!mounted) return;
-        await showDailyCapDialog(context);
-        return;
-      }
-    }
+    // PDF sharing is free for everyone — the daily cap is on the
+    // Calculate action, not on re-sharing an existing result.
 
     if (!mounted) return;
     setState(() => _sharing = true);
@@ -215,10 +229,6 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
         filename: filename,
         subject: l10n.pdfShareSubject,
       );
-
-      if (!subscription.isPro) {
-        await ref.read(usageQuotaProvider.notifier).recordReportShared();
-      }
     } catch (e) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
@@ -511,6 +521,35 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
                   size: CalmBtnSize.lg,
                   onPressed: _onCalculate,
                 ),
+                // Daily calculation counter — Free users only. Shown
+                // always (before and after a result lands) so the user
+                // can see their remaining budget at a glance.
+                if (!subscription.isPro)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 10),
+                    child: quotaAsync.when(
+                      data: (q) {
+                        final remaining = (kDailyFreeCalcCap -
+                                q.calculationsToday)
+                            .clamp(0, kDailyFreeCalcCap);
+                        return Center(
+                          child: Text(
+                            l10n.dailyCapCounter(
+                              q.calculationsToday,
+                              kDailyFreeCalcCap,
+                            ),
+                            style: TextStyle(
+                              color: remaining == 0 ? p.warn : p.subtle,
+                              fontSize: 12.5,
+                              letterSpacing: -0.06,
+                            ),
+                          ),
+                        );
+                      },
+                      loading: () => const SizedBox.shrink(),
+                      error: (_, _) => const SizedBox.shrink(),
+                    ),
+                  ),
                 const SizedBox(height: 14),
                 Center(
                   child: TextButton(
@@ -578,34 +617,6 @@ class _CalculatorScreenState extends ConsumerState<CalculatorScreen> {
                       ),
                     ],
                   ),
-                  if (!subscription.isPro)
-                    Padding(
-                      padding: const EdgeInsets.only(top: 10),
-                      child: quotaAsync.when(
-                        data: (q) {
-                          final remaining =
-                              (kDailyFreeReportCap - q.reportsToday).clamp(
-                            0,
-                            kDailyFreeReportCap,
-                          );
-                          return Center(
-                            child: Text(
-                              l10n.dailyCapCounter(
-                                q.reportsToday,
-                                kDailyFreeReportCap,
-                              ),
-                              style: TextStyle(
-                                color: remaining == 0 ? p.warn : p.subtle,
-                                fontSize: 12.5,
-                                letterSpacing: -0.06,
-                              ),
-                            ),
-                          );
-                        },
-                        loading: () => const SizedBox.shrink(),
-                        error: (_, _) => const SizedBox.shrink(),
-                      ),
-                    ),
                 ],
               ],
             ),

@@ -6,7 +6,7 @@ import '../../../theme/calm_widgets.dart';
 import '../../../theme/colors.dart';
 import 'paywall_screen.dart';
 
-/// Shown when a free user hits their daily PDF report cap.
+/// Shown when a free user hits their daily calculation cap.
 Future<void> showDailyCapDialog(BuildContext context) async {
   final l10n = AppLocalizations.of(context);
   final result = await showDialog<_GateAction>(
@@ -14,7 +14,7 @@ Future<void> showDailyCapDialog(BuildContext context) async {
     barrierColor: CalmPalette.of(context).sheetScrim,
     builder: (ctx) => _GateDialog(
       title: l10n.dailyCapTitle,
-      body: l10n.dailyCapBody(kDailyFreeReportCap),
+      body: l10n.dailyCapBody(kDailyFreeCalcCap),
     ),
   );
   if (result == _GateAction.upgrade && context.mounted) {

@@ -1,6 +1,6 @@
 # Kârly — Product Spec
 
-> **Status:** v0.2 / categories + History + daily PDF cap landed (paywall still stub)
+> **Status:** v0.2 / categories + History + Compare + daily calculation cap (paywall still stub)
 > **Last updated:** 2026-05-13
 > **Owner:** NexUtility studio
 
@@ -28,9 +28,9 @@ gated by a daily cap on the highest-value action.
 
 | Tier | Pricing | What you get |
 | --- | --- | --- |
-| **Free** | $0 | Calculator with all 10 marketplaces, category selector, **3 PDF reports per day** |
-| **Pro Monthly** | ₺79 / $2.99 per month | Everything in Free + **unlimited PDF reports** + **History** (save, browse, filter by category & marketplace) |
-| **Pro Annual** ⭐ | ₺599 / $19.99 per year | Same as Monthly. Saves ~37%. |
+| **Free** | $0 | Calculator with all 10 marketplaces, category selector, **3 calculations per day** (PDFs of those calculations are unlimited) |
+| **Pro Monthly** | ₺149 / $4.99 per month | Everything in Free + **unlimited PDF reports** + **History** (save, browse, filter by category & marketplace) + **Compare** (cross-marketplace view) |
+| **Pro Annual** ⭐ | ₺999 / $39.99 per year | Same as Monthly. Saves ~33% USD / ~44% TRY. |
 
 Pricing levers stay simple. No lifetime tier. No ads in any tier — ever.
 RevenueCat will manage entitlements and store-side billing once it lands.
@@ -40,15 +40,18 @@ RevenueCat will manage entitlements and store-side billing once it lands.
 The paywall lists three things. All three are real features the app actually
 delivers when the subscription is active (vs. when it isn't):
 
-1. **Save every calculation to History** — Free users can calculate, share a
+1. **Unlimited calculations** — Free users are capped at 3 calculations per
+   local day (counter resets at midnight). PDFs of those calculations are
+   unlimited on both tiers — once you've run a calculation, you can share
+   the report as many times as you want. Pro removes the daily cap entirely.
+2. **Save every calculation to History** — Free users can calculate, share a
    PDF, then move on. Pro users save the calculation with its category and
    marketplace.
-2. **Filter History by category and marketplace** — Pro-only filter bar above
-   the History list.
-3. **Unlimited PDF reports** — Free users are capped at 3 PDF reports per
-   local day (counter resets at midnight). Pro users have no cap.
+3. **Filter History by category and marketplace** — Pro-only filter bar above
+   the History list. Pro also unlocks the **Compare** screen — same product,
+   same numbers, every marketplace, ranked by profit or margin.
 
-Anything else (cross-marketplace SKU compare, multi-currency w/ live FX) is
+Anything else (multi-currency w/ live FX) is
 **deferred until built**. Not promised on the paywall.
 
 ## What this app is _not_
@@ -167,9 +170,9 @@ No remote storage. No analytics. No tracking.
 | Version | Scope | Status |
 | --- | --- | --- |
 | 0.1 | Calculator MVP, marketplaces preset list, Material 3 dark theme, EN + TR i18n with in-app language switcher, brand AppBar, item name input, PDF report + system share | ✅ shipped |
-| 0.2 | **Category selector + master list**, **History with category & marketplace filters** (Pro-gated), **daily 3-report cap on free tier**, **honest paywall (3 features only)**, **AdMob removed from scope** | ✅ this commit |
+| 0.2 | **Category selector + master list**, **History with category & marketplace filters** (Pro-gated), **Compare screen** (Pro-gated, cross-marketplace ranking), **daily 3-calculation cap on free tier**, **Calm warm-cream + sage redesign** (app + marketing site), **honest paywall (3 features only)**, **AdMob removed from scope** | ✅ this commit |
 | 0.3 | RevenueCat billing wired to real Play Store subscriptions, restore purchases | next |
-| 0.4 | Cross-marketplace SKU comparison (Pro feature 4), multi-currency with live FX (Pro feature 5) — only if validated by user feedback | TBD |
+| 0.4 | Multi-currency with live FX, optional currency override per calculation — only if validated by user feedback | TBD |
 | 0.5 | Per-category commission tables for TR marketplaces, KDV-correct mode | TBD |
 | 1.0 | Play Store submission with full localized listings (EN + TR + DE + ES at minimum), screenshots, marketing site presence. App Store deferred. | TBD |
 
@@ -187,8 +190,8 @@ No remote storage. No analytics. No tracking.
 
 ## Open questions
 
-- App icon: keep the NexUtility "K" mark in lime, or design a Kârly-specific
-  icon? Decide before 1.0 store submission.
+- App icon: design a Kârly-specific icon (warm cream + sage now that the
+  brand has moved off the lime palette). Decide before 1.0 store submission.
 - Currency conversion source: ECB free feed vs paid (e.g. exchangerate-host).
   Decide when (and if) v0.4 lands.
 - Should the daily free cap also throttle Save attempts, or is "Save is
